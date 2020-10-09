@@ -1,5 +1,5 @@
-import lex as lex
-import yacc as yacc
+import ply.lex as lex
+import ply.yacc as yacc
 
 
 #reserved words from the language
@@ -116,6 +116,8 @@ def t_error(t):
     t.lexer.skip(1) 
 
 lexer = lex.lex()
+
+lexer.input("ab3 = 'a'")
 
 """while True:
     tok = lexer.token()
