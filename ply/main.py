@@ -1,8 +1,8 @@
-import lex as lex
-import yacc as yacc
+import ply.lex as lex
+import ply.yacc as yacc
 
 
-#reserved words from the language
+#palabras reservadas
 reserved = {
     'funcion' : 'FUNCION',
     'var': 'VAR',
