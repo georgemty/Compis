@@ -14,9 +14,45 @@ Los dos subproyectos estan divididos en:
 - Elaboracion del input grafico, acoplandolo con el compilador mencionado
 anteriomente
 
+El equipo esta conformado por:
+- Alban Aguilar Campos
+- Jorge Arturo Ramirez
+
 ## Avance 1
 
-Este primer avance trato de elaborar el scanner y el parser. La herramienta
-utilizada para este avance fue lex&yacc. Implementadmos de manera exitosa esta
-herramienta y fue probada de manera correcta, obteniendo el resultado esperado
-al momento de ser ejecutado en una terminal.
+###Scanner y parser
+
+El primer avance del proyecto, consistio en realizar:
+- Analisis de lexico (scanner)
+- Analisis de sintaxis (parser)
+
+La herramienta utilizada para este proyecto fue **lex & yacc** dado que estaremos
+utilizando el lenguaje de programacion *Python* para realizar el compilador.
+
+De esta manera, el primer avance resulto tener una implementacion exitosa al momento
+de probarlo y por lo tanto el primer avance resulto en una version estable del proyecto
+hasta ahora.
+
+Las tareas a desarrollar fueron las siguientes:
+- Investigar como implementar **lex & yacc**
+- Implementar el scanner (lex)
+- Implementar el parser (yacc)
+
+Una vez terminadas las tareas, proseguimos a corroborar que el scanner y el parser
+estuvieran bien implementados de acuerdo a nuestra definicion de terminado:
+- [x] Lex & Yacc fue implementado de manera correcta
+- [x] El archivo de prueba contiene la sintaxis correcta propuesta por el equipo
+- [x] El main corre de manera exitosa
+
+## Avance 2
+
+El segundo avance, consistio en realizar las tablas de variables/funciones asi como
+el cubo semantico del proyecto. Este avance, da un preambulo para poder empezar a
+entender como funcionan las operaciones aritmeticas, logicas y comparaciones que se
+hacen en un programa del **lenguaje patito++** asi como entender como se relacionan
+las tablas de variables/funciones con los accesos de atributos y los parametros utilizados
+por las funciones.
+
+###Tablas de variables/funciones
+
+### Cubo semantico
