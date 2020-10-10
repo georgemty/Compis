@@ -18,7 +18,7 @@ reserved = {
     'return': 'RETURN',
     'end' : 'END',
     'read': 'READ',
-    'print': 'PRINT', 
+    'print': 'PRINT',
     'for' : 'FOR',
     'from' : 'FROM',
     'while': 'WHILE',
@@ -41,8 +41,8 @@ tokens =[
     'GT', #>
     'LTE', #<=
     'GTE', #>=
-    'AND', 
-    'OR', 
+    'AND',
+    'OR',
     'LPAREN',
     'RPAREN',
     'COMMA',
@@ -75,7 +75,7 @@ t_GT = r'\>'
 t_LT = r'\<'
 t_GTE = r'\=>'
 t_LTE = r'\<='
-t_NE = r'\<>' 
+t_NE = r'\<>'
 t_AND = r'\&&'
 t_OR = r'\|'
 t_ignore = ' \t\n'
@@ -113,7 +113,7 @@ def t_CTEC(t):
 #if errors are detected it prints error message
 def t_error(t):
     print("ERROR at '%s'" % t.value)
-    t.lexer.skip(1) 
+    t.lexer.skip(1)
 
 lexer = lex.lex()
 
@@ -132,7 +132,7 @@ lexer.input("ab3 = 'a'")
 #estructura basica del programa
 def p_prog(p):
     '''
-    prog : PROGRAM ID SEMICOLON prog_1 END 
+    prog : PROGRAM ID SEMICOLON prog_1 END
     '''
     p[0] = 'PROGRAMA COMPILADO'
 
@@ -163,7 +163,7 @@ def p_estatutos(p):
 
 def p_for(p):
     '''
-    for : FOR asignacion TO CTEI LCURLY estatutos RCURLY
+    for : FOR LPAREN type asignacion SEMICOLON exp SEMICOLON asignacion RPAREN LCURLY estatutos RCURLY
     '''
 
 def p_while(p):
@@ -198,7 +198,7 @@ def p_expresion(p):
 
 def p_arreglos(p):
     '''
-    arreglos : type ID LBRACKET CTEI RBRACKET arrAux SEMICOLON 
+    arreglos : type ID LBRACKET CTEI RBRACKET arrAux SEMICOLON
     '''
 
 def p_arrAux(p):
@@ -224,7 +224,7 @@ def p_escrituraAux(p):
 def p_lectura(p):
     '''
     lectura : READ LPAREN lecturaAux RPAREN SEMICOLON
-    ''' 
+    '''
 
 def p_lecturaAux(p):
     '''
@@ -242,10 +242,10 @@ def p_asignacion(p):
     asignacion : ID EQUALS expresion
     '''
 
-def p_llamadaFun(p): 
+def p_llamadaFun(p):
     '''
     llamadaFun : ID LPAREN expresion RPAREN SEMICOLON
-    ''' 
+    '''
 
 
 def p_var(p):
@@ -305,13 +305,72 @@ def p_multiArg(p):
 def p_error(p):
     print("Syntax Error in input!", p)
 
+def p_llamada(p):
+    '''
+    llamada : ID LPAREN exp RPAREN
+    '''
+
 
 
 
 def p_empty(p):
     '''
-    empty : 
+    empty :
     '''
+
+#Expresiones
+
+def p_exp(p):
+    '''
+    exp : texp
+        | texp OR texp
+    '''
+
+def p_texp(p):
+    '''
+    texp : gexp
+         | gexp AND gexp
+    '''
+
+def p_gexp(p):
+    '''
+    gexp : mexp
+         | gexp1 mexp
+    '''
+
+def p_gexp1(p):
+    '''
+    gexp1 : mexp GT mexp
+          | mexp LT mexp
+          | mexp GTE mexp
+          | mexp LTE mexp
+          | mexp NE mexp
+    '''
+
+def p_mexp(p):
+    '''
+    mexp : texp
+         | texp PLUS texp
+         | texp MINUS texp
+    '''
+
+def p_texp(p):
+    '''
+    texp : fexp
+         | fexp MUL fexp
+         | fexp DIV fexp
+    '''
+
+def p_fexp(p):
+    '''
+    fexp : var1
+         | CTEI
+         | CTEF
+         | CTEC
+         | llamada
+         | LPAREN exp RPAREN
+    '''
+
 
 parser = yacc.yacc()
 
@@ -334,7 +393,7 @@ def main():
             print(tok)
         if (parser.parse(informacion, tracking = True) == 'PROGRAMA COMPILADO'):
             print ("Correct Syntax")
-        else: 
+        else:
             print("Syntax error")
     except EOFError:
         # print("ERROREOF")
