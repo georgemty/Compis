@@ -163,7 +163,7 @@ def p_estatutos(p):
 
 def p_for(p):
     '''
-    for : FOR asignacion TO CTEI LCURLY estatutos RCURLY
+    for : FOR LPAREN type asignacion SEMICOLON exp SEMICOLON asignacion RPAREN LCURLY estatutos RCURLY
     '''
 
 def p_while(p):
