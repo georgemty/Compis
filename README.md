@@ -10,8 +10,8 @@ Asimismo, este proyecto se subdivide en dos proyectos que juntos conforman un so
 proyecto final.
 
 Los dos subproyectos estan divididos en:
--Elaboracion del compilador en **python** utilizando *lex & yacc*
--Elaboracion del input grafico, acoplandolo con el compilador mencionado
+- Elaboracion del compilador en **python** utilizando *lex & yacc*
+- Elaboracion del input grafico, acoplandolo con el compilador mencionado
 anteriomente
 
 ## Avance 1
