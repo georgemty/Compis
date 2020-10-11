@@ -267,6 +267,8 @@ def p_type(p):
         | CHAR
     '''
 
+
+
 def p_methods(p):
     '''
     methods : FUNCION VOID ID LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
