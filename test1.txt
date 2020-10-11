@@ -20,7 +20,7 @@ var int j;
 
 funcion void factores ()
 var float po;
-int arreglo[4];
+
 {
 	for i = 0 to 9{
 		read (p, a, b);

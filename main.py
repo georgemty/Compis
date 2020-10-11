@@ -1,6 +1,7 @@
 import ply.lex as lex
 import ply.yacc as yacc
-
+from tablaDeVariables import tablaVar
+from tablaDeFunciones import tablaFunc
 
 #reserved words from the language
 reserved = {
@@ -193,21 +194,6 @@ def p_expresion(p):
         | CTEF
     '''
 
-
-
-
-def p_arreglos(p):
-    '''
-    arreglos : type ID LBRACKET CTEI RBRACKET arrAux SEMICOLON
-    '''
-
-def p_arrAux(p):
-    '''
-    arrAux : COMMA ID LBRACKET CTEI RBRACKET
-        | empty
-    '''
-
-
 def p_escritura(p):
     '''
     escritura : PRINT LPAREN escrituraAux RPAREN SEMICOLON
@@ -258,7 +244,6 @@ def p_var(p):
 def p_var1(p):
     '''
     var1 : type ID varMulti SEMICOLON var2
-        | arreglos
     '''
 
 # para agregar mas de un tipo de variablea; solo puede ser empty la segunda que entra
