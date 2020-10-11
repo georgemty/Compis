@@ -194,13 +194,6 @@ def p_expresion(p):
         | CTEF
     '''
 
-def p_arrAux(p):
-    '''
-    arrAux : COMMA ID LBRACKET CTEI RBRACKET
-        | empty
-    '''
-
-
 def p_escritura(p):
     '''
     escritura : PRINT LPAREN escrituraAux RPAREN SEMICOLON
