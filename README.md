@@ -46,6 +46,8 @@ estuvieran bien implementados de acuerdo a nuestra definicion de terminado:
 
 ## Avance 2
 
+###### Tablas de variables/funciones y cubo semantico
+
 El segundo avance, consistio en realizar las tablas de variables/funciones asi como
 el cubo semantico del proyecto. Este avance, da un preambulo para poder empezar a
 entender como funcionan las operaciones aritmeticas, logicas y comparaciones que se
@@ -53,4 +55,3 @@ hacen en un programa del **lenguaje patito++** asi como entender como se relacio
 las tablas de variables/funciones con los accesos de atributos y los parametros utilizados
 por las funciones.
 
-###### Tablas de variables/funciones y cubo semantico
