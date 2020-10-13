@@ -53,6 +53,4 @@ hacen en un programa del **lenguaje patito++** asi como entender como se relacio
 las tablas de variables/funciones con los accesos de atributos y los parametros utilizados
 por las funciones.
 
-###### Tablas de variables/funciones
-
-###### Cubo semantico
+###### Tablas de variables/funciones y cubo semantico
