@@ -55,3 +55,21 @@ hacen en un programa del **lenguaje patito++** asi como entender como se relacio
 las tablas de variables/funciones con los accesos de atributos y los parametros utilizados
 por las funciones.
 
+Este primer avance consistio en desarrollar los siguientes bloques:
+- Table de variables
+- Tabla de funciones
+- Cubo semantico
+
+La **tabla de variables/funciones** es necesaria para poder almacenar la informacion acerca
+de las distintas entidades como lo son los nombres de las variables, nombres de funciones,
+objetocs, clases, interfaces, etc. La tabla de variables es utilizada tanto para el analisis
+como para la sintesis del compilador.
+
+El **cubo semantico** es necesario dentro del compilador, ya que es util para realizar operaciones
+aritmeticas, logicas, comparaciones y asignaciones.
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la tabla de variables/funciones
+asi como el cubo semantico estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
+- [x] Tabla de variables/funciones fue implementado de manera correcta
+- [x] Cubo semantico fue implementado de manera correcta
+- [x] El main corre de manera exitosa
