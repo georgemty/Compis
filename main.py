@@ -2,6 +2,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 from tablaDeVariables import tablaVar
 from tablaDeFunciones import tablaFunc
+from cuboSemantico import *
+from stack import Stack
 
 #reserved words from the language
 reserved = {
@@ -125,6 +127,29 @@ lexer.input("ab3 = 'a'")
     if not tok:
         break
     print(tok)"""
+
+tablaDeFunciones = tablaFunc()
+tipoDeFuncionActual = ''
+functionID = ''
+
+# pilas para los cuadruplos
+pilaDeNombresDeVariables = Stack()
+pilaDeTiposDeDato = Stack()
+pilaDeOperadores = Stack()
+quadruplos = []
+
+#avail = Avail()
+
+#instanciar Objetos de clases utilizadas
+cubo = Cube()
+pilaDeSaltosCondicionales = Stack()
+
+
+
+
+
+
+
 
 # parser
 #reglas en minuscula

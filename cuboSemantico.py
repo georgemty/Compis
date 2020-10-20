@@ -217,3 +217,4 @@ cuboSemantico['char']['char']['=='] = 'bool'
 
 def getType(left, right, operator):
     return cuboSemantico[left][right][operator]
+

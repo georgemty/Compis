@@ -12,22 +12,23 @@ class tablaVar:
             'type': type 
         }
 
-
     def buscarVar(self, id):
-        return id in self.listaVariables
+        return id in self.listaVariables #.keys() # contains the keys of the dictionary, as a list
     
-
     def printVar(self): #para vr si esta guardada la variable en la tabla
-        for i in self.listaVariables:
-            print( i, 'se encuentra en la tabla de variables')
+        print(self.listaVariables.items())
+
+    def getTipo(self, id):
+        return self.listaVariables[id]['type']
+
 
 #test
 
-vari = tablaVar()
-vari.agregar("int", "a")
-vari.agregar("float", "b")
-vari.agregar("char", "c")
-print(vari.buscarVar("b"))
-vari.printVar()
+# vari = tablaVar()
+# vari.agregar("int", "a")
+# vari.agregar("float", "b")
+# vari.agregar("char", "c")
+# print(vari.buscarVar("b"))
+# vari.printVar()
 
 
