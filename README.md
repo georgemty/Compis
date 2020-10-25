@@ -55,7 +55,7 @@ hacen en un programa del **lenguaje patito++** asi como entender como se relacio
 las tablas de variables/funciones con los accesos de atributos y los parametros utilizados
 por las funciones.
 
-Este primer avance consistio en desarrollar los siguientes bloques:
+Este segundo avance consistio en desarrollar los siguientes bloques:
 - Table de variables
 - Tabla de funciones
 - Cubo semantico
@@ -72,4 +72,27 @@ Una vez terminadas las tareas, proseguimos a corroborar que tanto la tabla de va
 asi como el cubo semantico estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
 - [x] Tabla de variables/funciones fue implementado de manera correcta
 - [x] Cubo semantico fue implementado de manera correcta
+- [x] El main corre de manera exitosa
+
+## Avance 3
+
+###### Generacion de codigo de expresiones aritmeticas y de estatutos condicionales
+
+El tercer avance consistio en realizar la generacion de codigo de expresiones aritmeticas y de estatutos condicionales.
+Este avance estuvo relacionado con el avance anterior ya que implementamos de manera correcta las expresiones aritmeticas
+(incluidas en el cubo semantico) y los estatutos condicionales (incluidos en las tablas de expresiones). 
+
+Este tercer avance consistio en desarrollar los siguientes bloques:
+- Generacion de codigo de expresiones aritmeticas
+- Generacion de codigo de estatuos condicionales
+
+En esta avance fue de vital importancia modificar las tablas de variables/funciones para poder integrar la generacion
+de codigo de expresiones aritmeticas en el main. Asimismo, importamos el diccionario (cubo semantico) y realizamos
+la creacion de instanciaciones de clases. 
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la la generacion de codigo  de expresiones aritmeticas 
+(tabla de variables/funciones) y la generacion de codigo de estatutos condicionales (cubo semantico) estuvieran bien 
+implementados y de acuerdo a nuestra definicion de terminado:
+- [x] Generacion de codigo de expresiones aritmeticas
+- [x] Generacion de codigo de estatutos condicionales
 - [x] El main corre de manera exitosa
