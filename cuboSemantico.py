@@ -1,5 +1,5 @@
 import sys
-from collection import defaultdict
+from collections import defaultdict
 
 #Este archivo contiene el cubo semantico del proyecto, el cual es util
 #para realizar operaciones aritmeticas, logicas, comparaciones y asignaciones
@@ -217,4 +217,3 @@ cuboSemantico['char']['char']['=='] = 'bool'
 
 def getType(left, right, operator):
     return cuboSemantico[left][right][operator]
-

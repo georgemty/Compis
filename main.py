@@ -2,8 +2,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 from tablaDeVariables import tablaVar
 from tablaDeFunciones import tablaFunc
-from cuboSemantico import *
 from stack import Stack
+from cuboSemantico import cuboSemantico as Cube
 
 #reserved words from the language
 reserved = {
@@ -141,15 +141,8 @@ quadruplos = []
 #avail = Avail()
 
 #instanciar Objetos de clases utilizadas
-cubo = Cube()
+cuboSemantico = Cube
 pilaDeSaltosCondicionales = Stack()
-
-
-
-
-
-
-
 
 # parser
 #reglas en minuscula
@@ -293,7 +286,6 @@ def p_type(p):
     '''
 
 
-
 def p_methods(p):
     '''
     methods : FUNCION VOID ID LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
@@ -386,8 +378,12 @@ def p_fexp(p):
 
 parser = yacc.yacc()
 
+def p_quad_asignacion(p):
+    'quad_asignacion'
+    global operadores, stacknom, stackTypes, quadruples
 
-
+    if operadores.size() > 0:
+        operando
 
 def main():
     try:
