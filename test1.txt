@@ -1,4 +1,4 @@
-program foreverAlone;
+program pruebas;
 
 var int i, j, d, h;
 float po;

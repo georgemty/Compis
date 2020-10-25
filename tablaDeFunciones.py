@@ -17,13 +17,27 @@ class tablaFunc():
                 'variables' : tablaVar(), #it is done separatly, too many vars
                 'numberVars' : numberVars 
             }
-            print('Funcion anadida:',fid, ' ', type)
+            print('Funcion anadida: ',fid, ' ', type)
         else:
             print(id , 'ya existe')
 
 
     def buscarFun(self, id):
         return id in self.functions 
+
+
+    def buscarVariableEnTablaFunciones(self, fid, id):
+        if self.functions[fid]['variables'].buscarVar(id):
+            return True
+        else: 
+            print('La variable', id, 'no existe...')
+
+
+    def getTipoDeVariable(self, id, fid):
+        if self.functions[fid]['variables'].buscarVar(id):
+            return self.functions[fid]['variables'].getTipo(id)
+        else:
+            print('La variable', id, 'no existe...')
 
 
     # function to add variable to table function
@@ -34,14 +48,11 @@ class tablaFunc():
         else:
             self.functions[fid]['variables'].agregar(type, id)
             print(id, 'fue anadida exitosamente')
-            
+
 
     def printFun(self, fid):
         if id in self.functions:
             self.functions[fid]['variables'].printVar()
-
-
-        
 
 
 #test
@@ -52,15 +63,15 @@ class tablaFunc():
 # funcion.printFun("factores")
 
 
-var = tablaFunc()
-var.agregarFuncion('void', 'ImprimeParametros', 3,
-['int', 'float', 'char'],['uno','dos', 'tres'], 0)
-var.agregarVariable('ImprimeParametros','int', 'i')
-var.agregarVariable('ImprimeParametros', 'float', 'o')
-var.agregarVariable('ImprimeParametros', 'char', 'p')
-print(var.buscarFun('ImprimeParametros'))
-print(var.buscarFun('hgrughurhgu'))
-var.printFun('hola')
+# var = tablaFunc()
+# var.agregarFuncion('void', 'ImprimeParametros', 3,
+# ['int', 'float', 'char'],['uno','dos', 'tres'], 0)
+# var.agregarVariable('ImprimeParametros','int', 'i')
+# var.agregarVariable('ImprimeParametros', 'float', 'o')
+# var.agregarVariable('ImprimeParametros', 'char', 'p')
+# print(var.buscarFun('ImprimeParametros'))
+# print(var.buscarFun('hgrughurhgu'))
+# var.printFun('hola')
 
 
 
