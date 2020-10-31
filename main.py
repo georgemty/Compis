@@ -131,6 +131,7 @@ lexer.input("ab3 = 'a'")
 
 tablaDeFunciones = tablaFunc()
 tipoDeFuncionActual = ''
+tipoDeVariableActual = ''
 functionID = ''
 variableID = ''
 
@@ -317,26 +318,84 @@ def p_idDeVariable(p):
     global variableID
     variableID = p[-1]
 
-def p_type(p):
+def p_agregarVariable(p):
     '''
-    type : INT tipoDeDato
-        | FLOAT tipoDeDato
-        | CHAR tipoDeDato
+    agregarVariable :
     '''
 
+    global tablaDeFunciones
+    global variableID
+    global tipoDeVariableActual
+
+    if not variableID == None:
+        if tablaDeFunciones.buscarFun(functionID):
+            tablaDeFunciones.agregarVariable(functionID, tipoDeVariableActual, variableID)
+        else:
+            print('La funcion no existe')
+            #SystemExit()
+
+def p_type(p):
+    '''
+    type : INT returnTipoDeFuncion
+         | FLOAT returnTipoDeFuncion
+         | CHAR returnTipoDeFuncion
+    '''
+
+def p_returnTipoDeFuncion(p):
+    '''
+    returnTipoDeFuncion :
+    '''
+
+    global tipoDeFuncionActual
+    global tipoDeVariableActual
+
+    tipoDeFuncionActual = p[-1]
+    tipoDeVariableActual = p[-1]
+
+"""
 def p_tipoDeDato(p):
     '''
     tipoDeDato :
     '''
     global tipoDeFuncionActual
     tipoDeFuncionActual = p[-1]
+"""
 
 def p_methods(p):
     '''
-    methods : FUNCION VOID ID LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
-        | FUNCION type ID LPAREN argumentos RPAREN var LCURLY estatutos return RCURLY methods
-        | empty
+    methods : FUNCION VOID voidMethod
+            | FUNCION INT funcionQueRetorna
+            | FUNCION CHAR funcionQueRetorna
+            | FUNCION FLOAT funcionQueRetorna
+            | empty
     '''
+
+def p_voidMethod(p):
+    '''
+    voidMethod : ID guardarFuncion LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
+    '''
+
+def p_funcionQueRetorna(p):
+    '''
+    funcionQueRetorna : ID guardarFuncion LPAREN argumentos RPAREN var LCURLY estatutos return RCURLY methods
+    '''
+
+def p_guardarFuncion(p):
+    '''
+    guardarFuncion :
+    '''
+
+    global tipoDeFuncionActual
+    global functionID
+    global tablaDeFunciones
+
+    tipoDeFuncionActual = p[-2]
+    functionID = p[-1]
+
+    if p[-2] == 'void':
+        tipoDeFuncionActual = 'void'
+
+    tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
 
 def p_argumentos(p):
     '''
