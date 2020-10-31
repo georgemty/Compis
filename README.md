@@ -78,9 +78,9 @@ asi como el cubo semantico estuvieran bien implementados y de acuerdo a nuestra 
 
 ###### Generacion de codigo de expresiones aritmeticas y de estatutos condicionales
 
-El tercer avance consistio en realizar la generacion de codigo de expresiones aritmeticas y de estatutos condicionales.
+El tercer avance consistio en la generacion de codigo de expresiones aritmeticas y de estatutos condicionales.
 Este avance estuvo relacionado con el avance anterior ya que implementamos de manera correcta las expresiones aritmeticas
-(incluidas en el cubo semantico) y los estatutos condicionales (incluidos en las tablas de expresiones). 
+(incluidas en el cubo semantico) y los estatutos condicionales (incluidos en las tablas de expresiones).
 
 Este tercer avance consistio en desarrollar los siguientes bloques:
 - Generacion de codigo de expresiones aritmeticas
@@ -88,11 +88,34 @@ Este tercer avance consistio en desarrollar los siguientes bloques:
 
 En esta avance fue de vital importancia modificar las tablas de variables/funciones para poder integrar la generacion
 de codigo de expresiones aritmeticas en el main. Asimismo, importamos el diccionario (cubo semantico) y realizamos
-la creacion de instanciaciones de clases. 
+la creacion de instanciaciones de clases.
 
-Una vez terminadas las tareas, proseguimos a corroborar que tanto la la generacion de codigo  de expresiones aritmeticas 
-(tabla de variables/funciones) y la generacion de codigo de estatutos condicionales (cubo semantico) estuvieran bien 
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la la generacion de codigo  de expresiones aritmeticas
+(tabla de variables/funciones) y la generacion de codigo de estatutos condicionales (cubo semantico) estuvieran bien
 implementados y de acuerdo a nuestra definicion de terminado:
 - [x] Generacion de codigo de expresiones aritmeticas
 - [x] Generacion de codigo de estatutos condicionales
+- [x] El main corre de manera exitosa
+
+## Avance 4
+
+###### Generacion de codigo de estatutos condicionales ciclicos y generacion de codigo de funciones
+
+El cuarto avance consistio en generar el codigo para los estatutos condicionales y ciclicos asi como generar el codigo
+de las funciones (cuadruplos). En este avance, implementamos de manera correcta los estatutos condicionales dentro del
+main. Asimismo, realizamos la correcta implementacion de la clase 'avail' la cual nos servira para crear las variables
+temporales de los cuadruplos.
+
+Este cuarto avance consistio en desarrollar los siguientes bloques:
+- Generacion de codigo de estatutos condicionales ciclicos
+- Generacion de codigo de funciones
+
+Este avance nos dio un preambulo para poder entender como implementar los cadruplos y manejar la precedencia de operaciones
+de manera correcta. Asimismo, una vez implementados los cadruplos ya tenemos un preambulo para poder trabajar con el mapeo
+de memoria (simulacion de memoria) en la siguiente entrega.
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la la generacion de codigo  de estatutos condicionales
+y la generacion de codigo de funciones, estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
+- [x] Generacion de codigo de estatutos condicionales
+- [ ] Generacion de codigo de codigo de funciones (cuadruplos) - nos falta terminar la implementacion completa de los cuadruplos
 - [x] El main corre de manera exitosa

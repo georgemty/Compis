@@ -10,12 +10,12 @@ class tablaFunc():
     def agregarFuncion(self, type, fid, numberParams, paramType, paramsID, numberVars):
         if fid not in self.functions.keys(): #params to save in the table
             self.functions[fid] = {
-                'type' : type, 
+                'type' : type,
                 'numberParams' : numberParams,
                 'paramType' : paramType,
-                'paramsID' : paramsID, 
+                'paramsID' : paramsID,
                 'variables' : tablaVar(), #it is done separatly, too many vars
-                'numberVars' : numberVars 
+                'numberVars' : numberVars
             }
             print('Funcion anadida: ',fid, ' ', type)
         else:
@@ -23,13 +23,13 @@ class tablaFunc():
 
 
     def buscarFun(self, id):
-        return id in self.functions 
+        return id in self.functions
 
 
     def buscarVariableEnTablaFunciones(self, fid, id):
         if self.functions[fid]['variables'].buscarVar(id):
             return True
-        else: 
+        else:
             print('La variable', id, 'no existe...')
 
 
@@ -72,7 +72,3 @@ class tablaFunc():
 # print(var.buscarFun('ImprimeParametros'))
 # print(var.buscarFun('hgrughurhgu'))
 # var.printFun('hola')
-
-
-
-

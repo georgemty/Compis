@@ -132,6 +132,7 @@ lexer.input("ab3 = 'a'")
 tablaDeFunciones = tablaFunc()
 tipoDeFuncionActual = ''
 functionID = ''
+variableID = ''
 
 # pilas para los cuadruplos
 pilaDeNombresDeVariables = Stack()
@@ -152,12 +153,11 @@ pilaDeSaltosCondicionales = Stack()
 #estructura basica del programa
 def p_prog(p):
     '''
-    prog : PROGRAM ID SEMICOLON prog_1 END
+    prog : PROGRAM ID agregarProg SEMICOLON prog_1 END
     '''
     global programId
     programId = p[2]
     p[0] = 'PROGRAMA COMPILADO'
-
 
 # aux del prog para evitar ambiguedades
 def p_prog_1(p):
@@ -165,11 +165,39 @@ def p_prog_1(p):
     prog_1 : var methods main_1
     '''
 
+def p_agregarProg(p):
+    '''
+    agregarProg :
+    '''
+    global tipoDeFuncionActual
+    tipoDeFuncionActual = 'programa'
+
+    global functionID
+    functionID = p[-1]
+    # print('---------', functionID, p[-1])
+    global tablaDeFunciones
+    if tablaDeFunciones.buscarFun(functionID):
+        print('funcion ya existe')
+    else:
+        tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
+        print('\nFuncion que se agrego', functionID, 'de tipo', tipoDeFuncionActual)
+
 #main del programa
 def p_main_1(p):
     '''
     main_1 : MAIN LPAREN RPAREN LCURLY estatutos RCURLY
     '''
+    global tipoDeFuncionActual
+    global functionID
+    global tablaDeFunciones
+
+    tipoDeFuncionActual = p[1]
+
+    functionID = p[1]
+    # print('--------', functionID)
+
+    tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
+    print('\nFuncion que se agrego', functionID, 'de tipo:', tipoDeFuncionActual)
 
 def p_estatutos(p):
     '''
@@ -264,7 +292,7 @@ def p_var(p):
 #aux de var para agregar variables de otros tipos
 def p_var1(p):
     '''
-    var1 : type ID varMulti SEMICOLON var2
+    var1 : type ID idDeVariable varMulti SEMICOLON var2
     '''
 
 # para agregar mas de un tipo de variablea; solo puede ser empty la segunda que entra
@@ -277,17 +305,31 @@ def p_var2(p):
 
 def p_varMulti(p):
     '''
-    varMulti : COMMA ID varMulti
+    varMulti : COMMA ID idDeVariable varMulti
         | empty
     '''
 
-def p_type(p):
+def p_idDeVariable(p):
     '''
-    type : INT
-        | FLOAT
-        | CHAR
+    idDeVariable :
     '''
 
+    global variableID
+    variableID = p[-1]
+
+def p_type(p):
+    '''
+    type : INT tipoDeDato
+        | FLOAT tipoDeDato
+        | CHAR tipoDeDato
+    '''
+
+def p_tipoDeDato(p):
+    '''
+    tipoDeDato :
+    '''
+    global tipoDeFuncionActual
+    tipoDeFuncionActual = p[-1]
 
 def p_methods(p):
     '''
