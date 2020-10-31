@@ -4,6 +4,7 @@ from tablaDeVariables import tablaVar
 from tablaDeFunciones import tablaFunc
 from stack import Stack
 from cuboSemantico import cuboSemantico as Cube
+from avail import Avail
 
 #reserved words from the language
 reserved = {
@@ -153,6 +154,8 @@ def p_prog(p):
     '''
     prog : PROGRAM ID SEMICOLON prog_1 END
     '''
+    global programId
+    programId = p[2]
     p[0] = 'PROGRAMA COMPILADO'
 
 
