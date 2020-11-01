@@ -256,7 +256,6 @@ def p_escrituraAux(p):
         | COMILLA CTESTRING COMILLA COMMA ID
     '''
 
-
 def p_lectura(p):
     '''
     lectura : READ LPAREN lecturaAux RPAREN SEMICOLON
@@ -275,8 +274,49 @@ def p_lecturaAux2(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID EQUALS expresion
+    asignacion : ID guardaIdDeVariable EQUALS tipoDeOperador expresion
     '''
+
+def p_quadruploAsignacion(p):
+    '''
+    quadruploAsignacion :
+    '''
+    if operadores.size() > 0:
+        # if operadores.top() == '=':
+        operadores2 = operadores.pop()
+        operando_derecho = stackName.pop()
+        operando_derecho_tipo = stackTypes.pop()
+        operando_izquierdo = stackName.pop()
+        operando_izquierdo_tipo = stackTypes.pop()
+        result = cubo.getTipo(operando_izquierdo_tipo, operando_derecho_tipo, operadores2)
+
+        if result != 'ERROR':
+            quad = (operadores2, operando_derecho, None, operando_izquierdo)
+            print('quadruplo:', str(quad))
+            quadruples.append(quad)
+        else:
+            print('Type Dissmatch....')
+            sys.exit()
+            
+    else:
+        print('Vacio....')
+        sys.exit()
+
+def p_guardaIdDeVariable(p):
+    '''
+    guardaIdDeVariable :
+    '''
+    global variableID, tablaDeFunciones, functionID, pilaDeNombresDeVariables, pilaDeTiposDeDato
+
+    variableID = p[-1]
+    if tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID):
+        tipos = tablaDeFunciones.getTipoDeVariable(variableID, functionID)
+        # print('tipos saveID2', tipos)
+        # print('varID saveID2', varId)
+        pilaDeTiposDeDato.push(tipos)
+        pilaDeNombresDeVariables.push(variableID)
+    else:
+        SystemExit()
 
 def p_llamadaFun(p):
     '''
@@ -409,7 +449,6 @@ def p_multiArg(p):
         | empty
     '''
 
-
 def p_error(p):
     print("Syntax Error in input!", p)
 
@@ -418,26 +457,33 @@ def p_llamada(p):
     llamada : ID LPAREN exp RPAREN
     '''
 
-
-
-
 def p_empty(p):
     '''
     empty :
     '''
+
+def p_tipoDeOperador(p):
+    '''
+    tipoDeOperador :
+    '''
+    global pilaDeOperadores
+
+    auxiliar = p[-1]
+    pilaDeOperadores.push(auxiliar)
+
 
 #Expresiones
 
 def p_exp(p):
     '''
     exp : texp
-        | texp OR texp
+        | texp OR tipoDeOperador texp
     '''
 
 def p_texp(p):
     '''
     texp : gexp
-         | gexp AND gexp
+         | gexp AND tipoDeOperador gexp
     '''
 
 def p_gexp(p):
@@ -448,25 +494,25 @@ def p_gexp(p):
 
 def p_gexp1(p):
     '''
-    gexp1 : mexp GT mexp
-          | mexp LT mexp
-          | mexp GTE mexp
-          | mexp LTE mexp
-          | mexp NE mexp
+    gexp1 : mexp GT tipoDeOperador mexp
+          | mexp LT tipoDeOperador mexp
+          | mexp GTE tipoDeOperador mexp
+          | mexp LTE tipoDeOperador mexp
+          | mexp NE tipoDeOperador mexp
     '''
 
 def p_mexp(p):
     '''
     mexp : texp
-         | texp PLUS texp
-         | texp MINUS texp
+         | texp PLUS tipoDeOperador texp
+         | texp MINUS tipoDeOperador texp
     '''
 
 def p_texp(p):
     '''
     texp : fexp
-         | fexp MUL fexp
-         | fexp DIV fexp
+         | fexp MUL tipoDeOperador fexp
+         | fexp DIV tipoDeOperador fexp
     '''
 
 def p_fexp(p):
