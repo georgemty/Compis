@@ -43,11 +43,14 @@ class tablaFunc():
     # function to add variable to table function
     # to associate certain variables to certain functions
     def agregarVariable(self, fid, type, id):
-        if (self.functions[fid]['variables'].buscarVar(id)):
+        if self.functions[fid]['variables'].buscarVar(id):
             print(id, 'ya existe')
         else:
             self.functions[fid]['variables'].agregar(type, id)
-            print(id, 'fue anadida exitosamente')
+            print("variable agregada ", id)
+        #else:
+        #    self.functions[fid]['variables'].agregar(type, id)
+        #    print(id, 'fue anadida exitosamente')
 
 
     def printFun(self, fid):

@@ -341,14 +341,10 @@ def p_guardaIdDeVariable(p):
 
     variableID = p[-1]
 
-    if variableID != None:
-        if tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID):
-            types = tablaDeFunciones.getTipoDeVariable(variableID, functionID)
-            print(types, "tipos")
-            if types:
-                pilaDeTiposDeDato.push(types)
-            else:
-                SystemExit()
+    if(tablaDeFunciones.buscarFun(functionID) == True):
+        tablaDeFunciones.agregarVariable(functionID, pilaDeTiposDeDato.pop(), variableID)
+    else:
+        print("Funcion no encontrada")
 
 def p_llamadaFun(p):
     '''
@@ -379,14 +375,6 @@ def p_varMulti(p):
              | empty
     '''
 
-def p_idDeVariable(p):
-    '''
-    idDeVariable :
-    '''
-
-    global variableID
-    variableID = p[-2]
-
 def p_agregarVariable(p):
     '''
     agregarVariable :
@@ -395,10 +383,13 @@ def p_agregarVariable(p):
     global tablaDeFunciones
     global variableID
     global tipoDeVariableActual
+    global functionID
 
     if not variableID == None:
         if tablaDeFunciones.buscarFun(functionID):
             tablaDeFunciones.agregarVariable(functionID, tipoDeVariableActual, variableID)
+            print("FUNCION ", functionID)
+            print("VARIABLE ", variableID)
         else:
             print('La funcion no existe')
             #SystemExit()
@@ -406,8 +397,8 @@ def p_agregarVariable(p):
 def p_type(p):
     '''
     type : INT
-        | FLOAT
-        | CHAR
+         | FLOAT
+         | CHAR
     '''
 
 def p_methods(p):
