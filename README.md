@@ -119,3 +119,20 @@ y la generacion de codigo de funciones, estuvieran bien implementados y de acuer
 - [x] Generacion de codigo de estatutos condicionales
 - [ ] Generacion de codigo de codigo de funciones (cuadruplos) - nos falta terminar la implementacion completa de los cuadruplos
 - [x] El main corre de manera exitosa
+
+## Avance 5
+
+###### Mapa de memoria de ejecucion para la maquina virtual y maquina virtual: ejecucion de expresiones aritmeticas y estatutos secuenciales
+
+El quinto avanace consistio en resolver problemas que tuvimos de la entrega anterior en cuanto a la generacion de los cuadruplos
+de asignacion ya que tuvimos problemas para establecer las funciones que se encargaban de realizar el guardado de las variables/funciones en la tabla de funciones/variables de manera exitosa. Asimismo, seguiremos en la elaboracion de los cuadruplos que nos faltan para poder terminar de manera completa y exitosa todos los cuadruplos requeridos para el correcto funcionamiento del compilador.
+
+Este quinto avance consistio en desarrollar los siguientes bloques:
+- Relizar el desarrollo de los cuadruplos faltantes
+- Resolver problemas de implementacion de los cuadruplos
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementacion de los cuadruplos como la resolucion de los problemas de implementacion estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
+
+- [x] Tuvimos un avanace significativo en la generacion/implementacion de los cuadruplos
+- [x] Resolvimos de manera correcta los problemas que surgieron al implementar los cuadruplos
+- [x] El main corre de manera exitosa
