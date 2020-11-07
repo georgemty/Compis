@@ -250,13 +250,13 @@ def p_while(p):
 
 def p_if(p):
     '''
-    if : IF LPAREN expresion RPAREN THEN LCURLY estatutos RCURLY else
+    if : IF LPAREN exp RPAREN THEN LCURLY estatutos RCURLY else
     '''
 
 def p_else(p):
     '''
     else : ELSE LCURLY estatutos RCURLY
-        | empty
+         | empty
     '''
 
 def p_return(p):
@@ -266,8 +266,8 @@ def p_return(p):
 
 def p_expresion(p):
     '''
-    expresion : CTEI
-              | CTEF
+    expresion : CTEI operandoConstante
+              | CTEF operandoConstante
     '''
 
 def p_escritura(p):
@@ -313,10 +313,10 @@ def p_quadruploAsignacion(p):
     global cuadruplos
 
     if pilaDeOperadores.size() > 0:
-        print("PASA IF 311")
+        #print("PASA IF 311")
         if(pilaDeOperadores.pop() == '='):
-            print("PASA IF 313")
-            print("++++++++++++++++++++++")
+            #print("PASA IF 313")
+            #print("++++++++++++++++++++++")
             operator = pilaDeOperadores.pop()
             operator = '='
             print("OPERATOR ", operator)
@@ -330,7 +330,7 @@ def p_quadruploAsignacion(p):
             resultado = getType(operandoIzquierdoTipo, operandoDerechoTipo, operator)
 
             if resultado != 'Error':
-                print("PASA IF 323")
+                #print("PASA IF 323")
                 cuadruplosAux = (operator, operandoIzquierdo, None, operandoDerecho)
                 print("OPERATOR ", operator)
                 print('cuadruplo: ' + str(cuadruplosAux))
@@ -569,10 +569,17 @@ def p_operandoConstante(p):
     global tablaDeFunciones
 
     resultado = type(p[-1])
-
+    print("RESULTADO ", resultado)
     if resultado == int:
         pilaDeTiposDeDato.push('int')
-        tablaDeFunciones.
+    elif resultado == float:
+        pilaDeTiposDeDato.push('float')
+    elif resultado == str:
+        if(len(p[-1]) > 1):
+            pilaDeTiposDeDato.push('string')
+        else:
+            pilaDeTiposDeDato.push('char')
+    pilaDeOperandos.push(p[-1])
 
 parser = yacc.yacc()
 
