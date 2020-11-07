@@ -52,6 +52,8 @@ class tablaFunc():
         #    self.functions[fid]['variables'].agregar(type, id)
         #    print(id, 'fue anadida exitosamente')
 
+    def agregarCteiAFuncTab(self, fid, type, value):
+        if(self.function[fid]['variables'].)
 
     def printFun(self, fid):
         if id in self.functions:

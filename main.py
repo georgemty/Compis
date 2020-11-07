@@ -143,9 +143,13 @@ pilaDeNombresDeVariables = Stack()
 pilaDeTiposDeDato = Stack()
 pilaDeOperadores = Stack()
 pilaDeOperandos = Stack()
+operandoDerecho = ''
+operandoIzquierdo = ''
+operandoDerechoTipo = ''
+operandoIzquierdoTipo = ''
 cuadruplos = []
 
-#avail = Avail()
+avail = Avail()
 
 #instanciar Objetos de clases utilizadas
 
@@ -174,13 +178,19 @@ def p_agregarProg(p):
     '''
     agregarProg :
     '''
-    global tipoDeFuncionActual, functionID, programId
+    global tipoDeFuncionActual
+    global functionID
+    global tablaDeFunciones
 
     tipoDeFuncionActual = 'program'
-    programId = p[-2]
-    functionID = programId
+    functionID = p[-2]
 
-    tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, '', '', 0)
+    if tablaDeFunciones.buscarFun(functionID):
+        print("Funcion ya existe")
+    else:
+        tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, '', '', 0)
+        print('\nSe agrego funcion ', functionID, ' de tipo ', tipoDeFuncionActual)
+
 
 #main del programa
 def p_main_1(p):
@@ -303,31 +313,31 @@ def p_quadruploAsignacion(p):
     global cuadruplos
 
     if pilaDeOperadores.size() > 0:
-
+        print("PASA IF 311")
+        if(pilaDeOperadores.pop() == '='):
+            print("PASA IF 313")
+            print("++++++++++++++++++++++")
             operator = pilaDeOperadores.pop()
+            operator = '='
+            print("OPERATOR ", operator)
+            operandoIzquierdo = pilaDeOperandos.pop()
+            print("OPERANDO IZQ ", operandoIzquierdo)
+            operandoIzquierdoTipo = pilaDeTiposDeDato.pop()
+            operandoDerecho = pilaDeOperandos.pop()
+            print("OPERANDO DER ", operandoDerecho)
+            operandoDerechoTipo = pilaDeTiposDeDato.pop()
 
-            operadorDerecho = pilaDeNombresDeVariables.pop()
-            tipoDeOperadorDerecho = pilaDeTiposDeDato.pop()
+            resultado = getType(operandoIzquierdoTipo, operandoDerechoTipo, operator)
 
-            operadorIzquierdo = pilaDeNombresDeVariables.pop()
-            tipoDeOperadorIzquierdo = pilaDeTiposDeDato.pop()
-            # print("__")
-            # print(opIzqType)
-            # print(opDerType)
-            #print(operator)
-            #print("_")
-            resultadoType = getType(tipoDeOperadorIzquierdo, tipoDeOperadorDerecho, operator)
-            # print(resultadoType)
-            #print("TROLOLOLOLOLO")
-            #print(resultadoType)
-
-            if resultadoType != 'ERROR':
-                quad = (operator, tipoDeOperadorDerecho, None, tipoDeOperadorIzquierdo)
-                print('Cuadruplo:', str(quad))
-                cuadruplos.append(quad)
+            if resultado != 'Error':
+                print("PASA IF 323")
+                cuadruplosAux = (operator, operandoIzquierdo, None, operandoDerecho)
+                print("OPERATOR ", operator)
+                print('cuadruplo: ' + str(cuadruplosAux))
+                cuadruplos.append(cuadruplosAux)
             else:
-                print('Type Dissmatch....')
-                sys.exit()
+                print('Type mismatch')
+                SystemExit()
 
 def p_guardaIdDeVariable(p):
     '''
@@ -411,10 +421,18 @@ def p_agregarVariable(p):
 
 def p_type(p):
     '''
-    type : INT
-         | FLOAT
-         | CHAR
+    type : INT guardarTipoDeVariable
+         | FLOAT guardarTipoDeVariable
+         | CHAR guardarTipoDeVariable
     '''
+
+def p_guardarTipoDeVariable(p):
+    '''
+    guardarTipoDeVariable :
+    '''
+
+    global tipoDeVariableActual
+    tipoDeVariableActual = p[-1]
 
 def p_methods(p):
     '''
@@ -533,12 +551,28 @@ def p_texp1(p):
 def p_fexp(p):
     '''
     fexp : var1
-         | CTEI
-         | CTEF
-         | CTEC
+         | CTEI operandoConstante
+         | CTEF operandoConstante
+         | CTEC operandoConstante
+         | CTESTRING operandoConstante
          | llamada
          | LPAREN exp RPAREN
     '''
+
+def p_operandoConstante(p):
+    '''
+    operandoConstante :
+    '''
+
+    global pilaDeOperandos
+    global pilaDeOperadores
+    global tablaDeFunciones
+
+    resultado = type(p[-1])
+
+    if resultado == int:
+        pilaDeTiposDeDato.push('int')
+        tablaDeFunciones.
 
 parser = yacc.yacc()
 
