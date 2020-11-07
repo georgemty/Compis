@@ -7,7 +7,7 @@ char doo, y, mj;
 funcion int factores (int i, float po)
 var int j;
 {
-	if (10) then{
+	if (a > b) then{
 		print(a);
 	}
 	else{
@@ -18,14 +18,14 @@ var int j;
 
 }
 
-funcion void factores ()
+funcion void factores2 ()
 var float po;
 
 {
 	for i = 0 to 9{
 		read (p, a, b);
 	}
-	
+
 }
 
 main (){

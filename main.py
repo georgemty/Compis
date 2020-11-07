@@ -1,9 +1,10 @@
 import ply.lex as lex
 import ply.yacc as yacc
+import sys
 from tablaDeVariables import tablaVar
 from tablaDeFunciones import tablaFunc
 from stack import Stack
-from cuboSemantico import cuboSemantico as Cube
+from cuboSemantico import *
 from avail import Avail
 
 #reserved words from the language
@@ -37,6 +38,7 @@ tokens =[
     'CTEC', #char
     'CTESTRING', #string
     'EQUALS',
+    'COMPARE',
     'PLUS',
     'MINUS',
     'MUL',
@@ -68,6 +70,7 @@ t_RBRACKET = r'\]'
 t_LCURLY = r'\{'
 t_RCURLY = r'\}'
 t_EQUALS = r'\='
+t_COMPARE = r'\=='
 t_PLUS = r'\+'
 t_MINUS = r'\-'
 t_LPAREN = r'\('
@@ -132,17 +135,24 @@ lexer.input("ab3 = 'a'")
 tablaDeFunciones = tablaFunc()
 tipoDeFuncionActual = ''
 functionID = ''
+variableID = ''
+programId = ''
 
 # pilas para los cuadruplos
 pilaDeNombresDeVariables = Stack()
 pilaDeTiposDeDato = Stack()
 pilaDeOperadores = Stack()
-quadruplos = []
+pilaDeOperandos = Stack()
+operandoDerecho = ''
+operandoIzquierdo = ''
+operandoDerechoTipo = ''
+operandoIzquierdoTipo = ''
+cuadruplos = []
 
-#avail = Avail()
+avail = Avail()
 
 #instanciar Objetos de clases utilizadas
-cuboSemantico = Cube
+
 pilaDeSaltosCondicionales = Stack()
 
 # parser
@@ -152,18 +162,35 @@ pilaDeSaltosCondicionales = Stack()
 #estructura basica del programa
 def p_prog(p):
     '''
-    prog : PROGRAM ID SEMICOLON prog_1 END
+    prog : PROGRAM ID SEMICOLON agregarProg prog_1 END
     '''
     global programId
     programId = p[2]
     p[0] = 'PROGRAMA COMPILADO'
-
 
 # aux del prog para evitar ambiguedades
 def p_prog_1(p):
     '''
     prog_1 : var methods main_1
     '''
+
+def p_agregarProg(p):
+    '''
+    agregarProg :
+    '''
+    global tipoDeFuncionActual
+    global functionID
+    global tablaDeFunciones
+
+    tipoDeFuncionActual = 'program'
+    functionID = p[-2]
+
+    if tablaDeFunciones.buscarFun(functionID):
+        print("Funcion ya existe")
+    else:
+        tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, '', '', 0)
+        #print('\nSe agrego funcion ', functionID, ' de tipo ', tipoDeFuncionActual)
+
 
 #main del programa
 def p_main_1(p):
@@ -174,19 +201,47 @@ def p_main_1(p):
 def p_estatutos(p):
     '''
     estatutos : asignacion SEMICOLON estatutos
-        | llamadaFun estatutos
-        | lectura estatutos
-        | escritura estatutos
-        | for estatutos
-        | while estatutos
-        | if estatutos
-        | empty
+              | llamadaFun estatutos
+              | lectura estatutos
+              | escritura estatutos
+              | for estatutos
+              | while estatutos
+              | if estatutos
+              | empty
     '''
 
 def p_for(p):
     '''
-    for : FOR asignacion TO CTEI LCURLY estatutos RCURLY
+    for : FOR asignacion TO exp LCURLY estatutos RCURLY
+
     '''
+
+def p_forOperador(p):
+    '''
+    forOperador :
+    '''
+    global pilaDeOperadores
+    global cuadruplos
+    global pilaDeSaltosCondicionales
+
+    pilaDeOperadores.push('for')
+    pilaDeSaltosCondicionales.push(len(cuadruplos))
+
+def p_forCuadruplo(p):
+    '''
+    forCuadruplo :
+    '''
+    global pilaDeNombresDeVariables, pilaDeTiposDeDato, cuadruplos, pilaDeSaltosCondicionales
+    tipoDeResultado = pilaDeTiposDeDato.pop()
+
+    if tipoDeResultado == 'bool':
+        valor = pilaDeNombresDeVariables.pop()
+        generadorQuad = ('GotoV', valor, None, -1)
+        cuadruplos.append(generadorQuad)
+        pilaDeSaltosCondicionales.push(len(cuadruplos)-1)
+    else:
+        print('Error for quad....')
+        SystemExit()
 
 def p_while(p):
     '''
@@ -195,13 +250,13 @@ def p_while(p):
 
 def p_if(p):
     '''
-    if : IF LPAREN expresion RPAREN THEN LCURLY estatutos RCURLY else
+    if : IF LPAREN exp RPAREN THEN LCURLY estatutos RCURLY else
     '''
 
 def p_else(p):
     '''
     else : ELSE LCURLY estatutos RCURLY
-        | empty
+         | empty
     '''
 
 def p_return(p):
@@ -211,8 +266,8 @@ def p_return(p):
 
 def p_expresion(p):
     '''
-    expresion : CTEI
-        | CTEF
+    expresion : CTEI operandoConstante
+              | CTEF operandoConstante
     '''
 
 def p_escritura(p):
@@ -223,10 +278,9 @@ def p_escritura(p):
 def p_escrituraAux(p):
     '''
     escrituraAux : ID
-        | COMILLA CTESTRING COMILLA
-        | COMILLA CTESTRING COMILLA COMMA ID
+                 | COMILLA CTESTRING COMILLA
+                 | COMILLA CTESTRING COMILLA COMMA ID
     '''
-
 
 def p_lectura(p):
     '''
@@ -235,79 +289,198 @@ def p_lectura(p):
 
 def p_lecturaAux(p):
     '''
-    lecturaAux : ID lecturaAux2
+    lecturaAux : ID guardaIdDeVariable lecturaAux2
     '''
 
 def p_lecturaAux2(p):
     '''
     lecturaAux2 : COMMA lecturaAux
-        | empty
+                | empty
     '''
 
 def p_asignacion(p):
     '''
-    asignacion : ID EQUALS expresion
+    asignacion : ID guardaIdDeVariable funcionAsignacion EQUALS tipoDeOperador expresion quadruploAsignacion
     '''
+
+def p_quadruploAsignacion(p):
+    '''
+    quadruploAsignacion :
+    '''
+    global pilaDeTiposDeDato
+    global pilaDeNombresDeVariables
+    global pilaDeOperadores
+    global cuadruplos
+
+    if pilaDeOperadores.size() > 0:
+        #print("PASA IF 311")
+        if(pilaDeOperadores.pop() == '='):
+            #print("PASA IF 313")
+            #print("++++++++++++++++++++++")
+            operator = pilaDeOperadores.pop()
+            operator = '='
+            #print("OPERATOR ", operator)
+            operandoIzquierdo = pilaDeOperandos.pop()
+            #print("OPERANDO IZQ ", operandoIzquierdo)
+            operandoIzquierdoTipo = pilaDeTiposDeDato.pop()
+            operandoDerecho = pilaDeOperandos.pop()
+            #print("OPERANDO DER ", operandoDerecho)
+            operandoDerechoTipo = pilaDeTiposDeDato.pop()
+
+            resultado = getType(operandoIzquierdoTipo, operandoDerechoTipo, operator)
+
+            if resultado != 'Error':
+                #print("PASA IF 323")
+                cuadruplosAux = (operator, operandoIzquierdo, None, operandoDerecho)
+                #print("OPERATOR ", operator)
+                print('cuadruplo: ' + str(cuadruplosAux))
+                cuadruplos.append(cuadruplosAux)
+            else:
+                print('Type mismatch')
+                SystemExit()
+
+def p_guardaIdDeVariable(p):
+    '''
+    guardaIdDeVariable :
+    '''
+    global variableID
+    global tablaDeFunciones
+    global functionID
+    global pilaDeNombresDeVariables
+    global pilaDeTiposDeDato
+
+    variableID = p[-1]
+
+    if(tablaDeFunciones.buscarFun(functionID) == True):
+        tablaDeFunciones.agregarVariable(functionID, pilaDeTiposDeDato.pop(), variableID)
+    else:
+        print("Funcion no encontrada")
+
+def p_funcionAsignacion(p):
+    '''
+    funcionAsignacion :
+    '''
+    global tablaDeFunciones
+    global variableID
+
+    variableID = p[-2]
+
+    if(tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID)):
+        pilaDeTiposDeDato.push(tablaDeFunciones.getTipoDeVariable(variableID, functionID))
+        pilaDeOperandos.push(variableID)
+    else:
+        SystemExit()
 
 def p_llamadaFun(p):
     '''
     llamadaFun : ID LPAREN expresion RPAREN SEMICOLON
     '''
 
-
 def p_var(p):
     '''
     var : VAR var1
         | empty
     '''
-
 #aux de var para agregar variables de otros tipos
 def p_var1(p):
     '''
-    var1 : type ID varMulti SEMICOLON var2
+    var1 : type ID guardaIdDeVariable varMulti SEMICOLON var2
     '''
 
 # para agregar mas de un tipo de variablea; solo puede ser empty la segunda que entra
 def p_var2(p):
     '''
     var2 : var1
-        | empty
+         | empty
     '''
-
 
 def p_varMulti(p):
     '''
-    varMulti : COMMA ID varMulti
-        | empty
+    varMulti : COMMA ID guardaIdDeVariable varMulti
+             | empty
     '''
+
+def p_agregarVariable(p):
+    '''
+    agregarVariable :
+    '''
+
+    global tablaDeFunciones
+    global variableID
+    global tipoDeVariableActual
+    global functionID
+
+    if not variableID == None:
+        if tablaDeFunciones.buscarFun(functionID):
+            tablaDeFunciones.agregarVariable(functionID, tipoDeVariableActual, variableID)
+            print("FUNCION ", functionID)
+            print("VARIABLE ", variableID)
+        else:
+            print('La funcion no existe')
+            #SystemExit()
 
 def p_type(p):
     '''
-    type : INT
-        | FLOAT
-        | CHAR
+    type : INT guardarTipoDeVariable
+         | FLOAT guardarTipoDeVariable
+         | CHAR guardarTipoDeVariable
     '''
 
+def p_guardarTipoDeVariable(p):
+    '''
+    guardarTipoDeVariable :
+    '''
+
+    global tipoDeVariableActual
+    tipoDeVariableActual = p[-1]
 
 def p_methods(p):
     '''
-    methods : FUNCION VOID ID LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
-        | FUNCION type ID LPAREN argumentos RPAREN var LCURLY estatutos return RCURLY methods
-        | empty
+    methods : FUNCION VOID voidMethod
+            | FUNCION INT funcionQueRetorna
+            | FUNCION CHAR funcionQueRetorna
+            | FUNCION FLOAT funcionQueRetorna
+            | empty
     '''
+
+def p_voidMethod(p):
+    '''
+    voidMethod : ID guardarFuncion LPAREN argumentos RPAREN var LCURLY estatutos RCURLY methods
+    '''
+
+def p_funcionQueRetorna(p):
+    '''
+    funcionQueRetorna : ID guardarFuncion LPAREN argumentos RPAREN var LCURLY estatutos return RCURLY methods
+    '''
+
+def p_guardarFuncion(p):
+    '''
+    guardarFuncion :
+    '''
+
+    global tipoDeFuncionActual
+    global functionID
+    global tablaDeFunciones
+
+    tipoDeFuncionActual = p[-2]
+    functionID = p[-1]
+
+    if p[-2] == 'void':
+        tipoDeFuncionActual = 'void'
+
+    tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
 
 def p_argumentos(p):
     '''
-    argumentos : type ID multiArg
-        | empty
+    argumentos : type ID guardaIdDeVariable multiArg
+               | empty
     '''
 
 def p_multiArg(p):
     '''
-    multiArg : COMMA argumentos
-        | empty
+    multiArg : COMMA argumentos guardaIdDeVariable
+             | empty
     '''
-
 
 def p_error(p):
     print("Syntax Error in input!", p)
@@ -317,9 +490,6 @@ def p_llamada(p):
     llamada : ID LPAREN exp RPAREN
     '''
 
-
-
-
 def p_empty(p):
     '''
     empty :
@@ -327,66 +497,109 @@ def p_empty(p):
 
 #Expresiones
 
+def p_tipoDeOperador(p):
+    '''
+    tipoDeOperador :
+    '''
+    global pilaDeOperadores
+
+    aux = p[-1]
+    pilaDeOperadores.push(aux)
+
 def p_exp(p):
     '''
-    exp : texp
-        | texp OR texp
+    exp : nexp exp1
     '''
 
-def p_texp(p):
+def p_exp1(p):
     '''
-    texp : gexp
-         | gexp AND gexp
-    '''
-
-def p_gexp(p):
-    '''
-    gexp : mexp
-         | gexp1 mexp
+    exp1 : OR tipoDeOperador exp
+         | empty
     '''
 
-def p_gexp1(p):
+def p_nexp(p):
     '''
-    gexp1 : mexp GT mexp
-          | mexp LT mexp
-          | mexp GTE mexp
-          | mexp LTE mexp
-          | mexp NE mexp
+    nexp : compexp nexp1
     '''
 
-def p_mexp(p):
+def p_nexp1(p):
     '''
-    mexp : texp
-         | texp PLUS texp
-         | texp MINUS texp
-    '''
-
-def p_texp(p):
-    '''
-    texp : fexp
-         | fexp MUL fexp
-         | fexp DIV fexp
+    nexp1 : AND nexp
+          | empty
     '''
 
-def p_fexp(p):
+def p_compexp(p):
     '''
-    fexp : var1
-         | CTEI
+    compexp : sumexp compexp1
+    '''
+
+def p_compexp1(p):
+    '''
+    compexp1 : GT tipoDeOperador sumexp
+             | LT tipoDeOperador sumexp
+             | GTE tipoDeOperador sumexp
+             | LTE tipoDeOperador sumexp
+             | NE tipoDeOperador sumexp
+             | empty
+    '''
+
+def p_sumexp(p):
+    '''
+    sumexp : mulexp sumexp1
+    '''
+
+def p_sumexp1(p):
+    '''
+    sumexp1 : PLUS tipoDeOperador sumexp
+            | MINUS tipoDeOperador sumexp
+            | empty
+    '''
+
+def p_mulexp(p):
+    '''
+    mulexp : pexp mulexp1
+    '''
+
+def p_mulexp1(p):
+    '''
+    mulexp1 : MUL tipoDeOperador mulexp
+            | DIV tipoDeOperador mulexp
+            | empty
+    '''
+
+def p_pexp(p):
+    '''
+    pexp : CTEI
          | CTEF
          | CTEC
+         | CTESTRING
          | llamada
+         | ID
          | LPAREN exp RPAREN
     '''
 
+def p_operandoConstante(p):
+    '''
+    operandoConstante :
+    '''
+
+    global pilaDeOperandos
+    global pilaDeOperadores
+    global tablaDeFunciones
+
+    resultado = type(p[-1])
+    if resultado == int:
+        pilaDeTiposDeDato.push('int')
+    elif resultado == float:
+        pilaDeTiposDeDato.push('float')
+    elif resultado == str:
+        if(len(p[-1]) > 1):
+            pilaDeTiposDeDato.push('string')
+        else:
+            pilaDeTiposDeDato.push('char')
+    pilaDeOperandos.push(p[-1])
 
 parser = yacc.yacc()
-
-def p_quad_asignacion(p):
-    'quad_asignacion'
-    global operadores, stacknom, stackTypes, quadruples
-
-    if operadores.size() > 0:
-        operando
 
 def main():
     try:
