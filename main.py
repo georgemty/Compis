@@ -189,7 +189,7 @@ def p_agregarProg(p):
         print("Funcion ya existe")
     else:
         tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, '', '', 0)
-        print('\nSe agrego funcion ', functionID, ' de tipo ', tipoDeFuncionActual)
+        #print('\nSe agrego funcion ', functionID, ' de tipo ', tipoDeFuncionActual)
 
 
 #main del programa
@@ -319,12 +319,12 @@ def p_quadruploAsignacion(p):
             #print("++++++++++++++++++++++")
             operator = pilaDeOperadores.pop()
             operator = '='
-            print("OPERATOR ", operator)
+            #print("OPERATOR ", operator)
             operandoIzquierdo = pilaDeOperandos.pop()
-            print("OPERANDO IZQ ", operandoIzquierdo)
+            #print("OPERANDO IZQ ", operandoIzquierdo)
             operandoIzquierdoTipo = pilaDeTiposDeDato.pop()
             operandoDerecho = pilaDeOperandos.pop()
-            print("OPERANDO DER ", operandoDerecho)
+            #print("OPERANDO DER ", operandoDerecho)
             operandoDerechoTipo = pilaDeTiposDeDato.pop()
 
             resultado = getType(operandoIzquierdoTipo, operandoDerechoTipo, operator)
@@ -332,7 +332,7 @@ def p_quadruploAsignacion(p):
             if resultado != 'Error':
                 #print("PASA IF 323")
                 cuadruplosAux = (operator, operandoIzquierdo, None, operandoDerecho)
-                print("OPERATOR ", operator)
+                #print("OPERATOR ", operator)
                 print('cuadruplo: ' + str(cuadruplosAux))
                 cuadruplos.append(cuadruplosAux)
             else:
@@ -508,54 +508,73 @@ def p_tipoDeOperador(p):
 
 def p_exp(p):
     '''
-    exp : texp
-        | texp OR tipoDeOperador texp
+    exp : nexp exp1
     '''
 
-def p_texp(p):
+def p_exp1(p):
     '''
-    texp : gexp
-         | gexp AND tipoDeOperador gexp
-    '''
-
-def p_gexp(p):
-    '''
-    gexp : mexp
-         | gexp1 mexp
+    exp1 : OR tipoDeOperador exp
+         | empty
     '''
 
-def p_gexp1(p):
+def p_nexp(p):
     '''
-    gexp1 : mexp GT tipoDeOperador mexp
-          | mexp LT tipoDeOperador mexp
-          | mexp GTE tipoDeOperador mexp
-          | mexp LTE tipoDeOperador mexp
-          | mexp NE tipoDeOperador mexp
-          | mexp COMPARE tipoDeOperador mexp
+    nexp : compexp nexp1
     '''
 
-def p_mexp(p):
+def p_nexp1(p):
     '''
-    mexp : texp1
-         | texp1 PLUS tipoDeOperador texp1
-         | texp1 MINUS tipoDeOperador texp1
-    '''
-
-def p_texp1(p):
-    '''
-    texp1 : fexp
-          | fexp MUL tipoDeOperador fexp
-          | fexp DIV tipoDeOperador fexp
+    nexp1 : AND nexp
+          | empty
     '''
 
-def p_fexp(p):
+def p_compexp(p):
     '''
-    fexp : var1
-         | CTEI operandoConstante
-         | CTEF operandoConstante
-         | CTEC operandoConstante
-         | CTESTRING operandoConstante
+    compexp : sumexp compexp1
+    '''
+
+def p_compexp1(p):
+    '''
+    compexp1 : GT tipoDeOperador sumexp
+             | LT tipoDeOperador sumexp
+             | GTE tipoDeOperador sumexp
+             | LTE tipoDeOperador sumexp
+             | NE tipoDeOperador sumexp
+             | empty
+    '''
+
+def p_sumexp(p):
+    '''
+    sumexp : mulexp sumexp1
+    '''
+
+def p_sumexp1(p):
+    '''
+    sumexp1 : PLUS tipoDeOperador sumexp
+            | MINUS tipoDeOperador sumexp
+            | empty
+    '''
+
+def p_mulexp(p):
+    '''
+    mulexp : pexp mulexp1
+    '''
+
+def p_mulexp1(p):
+    '''
+    mulexp1 : MUL tipoDeOperador mulexp
+            | DIV tipoDeOperador mulexp
+            | empty
+    '''
+
+def p_pexp(p):
+    '''
+    pexp : CTEI
+         | CTEF
+         | CTEC
+         | CTESTRING
          | llamada
+         | ID
          | LPAREN exp RPAREN
     '''
 
@@ -569,7 +588,6 @@ def p_operandoConstante(p):
     global tablaDeFunciones
 
     resultado = type(p[-1])
-    print("RESULTADO ", resultado)
     if resultado == int:
         pilaDeTiposDeDato.push('int')
     elif resultado == float:
