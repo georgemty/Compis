@@ -290,7 +290,7 @@ def p_lecturaAux2(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID guardaIdDeVariable EQUALS tipoDeOperador expresion quadruploAsignacion
+    asignacion : ID guardaIdDeVariable funcionAsignacion EQUALS tipoDeOperador expresion quadruploAsignacion
     '''
 
 def p_quadruploAsignacion(p):
@@ -345,6 +345,21 @@ def p_guardaIdDeVariable(p):
         tablaDeFunciones.agregarVariable(functionID, pilaDeTiposDeDato.pop(), variableID)
     else:
         print("Funcion no encontrada")
+
+def p_funcionAsignacion(p):
+    '''
+    funcionAsignacion :
+    '''
+    global tablaDeFunciones
+    global variableID
+
+    variableID = p[-2]
+
+    if(tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID)):
+        pilaDeTiposDeDato.push(tablaDeFunciones.getTipoDeVariable(variableID, functionID))
+        pilaDeOperandos.push(variableID)
+    else:
+        SystemExit()
 
 def p_llamadaFun(p):
     '''
