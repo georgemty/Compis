@@ -212,8 +212,7 @@ def p_estatutos(p):
 
 def p_for(p):
     '''
-    for : FOR asignacion TO exp LCURLY estatutos RCURLY
-
+    for : FOR LPAREN asignacion SEMICOLON exp RPAREN LCURLY estatutos RCURLY forOperador forCuadruplo
     '''
 
 def p_forOperador(p):
@@ -225,6 +224,7 @@ def p_forOperador(p):
     global pilaDeSaltosCondicionales
 
     pilaDeOperadores.push('for')
+    print("FOR")
     pilaDeSaltosCondicionales.push(len(cuadruplos))
 
 def p_forCuadruplo(p):
@@ -233,12 +233,15 @@ def p_forCuadruplo(p):
     '''
     global pilaDeNombresDeVariables, pilaDeTiposDeDato, cuadruplos, pilaDeSaltosCondicionales
     tipoDeResultado = pilaDeTiposDeDato.pop()
-
-    if tipoDeResultado == 'bool':
-        valor = pilaDeNombresDeVariables.pop()
-        generadorQuad = ('GotoV', valor, None, -1)
+    print("Tipo de resultado ", tipoDeResultado)
+    print("ENTRO EL CUADRUPLO FOR")
+    if (tipoDeResultado == 'bool'):
+        print("ENTRO AL IF BOOL")
+        valor = pilaDeOperandos.pop()
+        generadorQuad = ('GotoF', valor, None, -1)
         cuadruplos.append(generadorQuad)
         pilaDeSaltosCondicionales.push(len(cuadruplos)-1)
+        print("EL CUADRUPLO ES ", generadorQuad)
     else:
         print('Error for quad....')
         SystemExit()
@@ -300,7 +303,7 @@ def p_lecturaAux2(p):
 
 def p_asignacion(p):
     '''
-    asignacion : ID guardaIdDeVariable funcionAsignacion EQUALS tipoDeOperador expresion quadruploAsignacion
+    asignacion : ID guardaIdDeVariable funcionAsignacion EQUALS tipoDeOperador exp quadruploAsignacion
     '''
 
 def p_quadruploAsignacion(p):
@@ -540,6 +543,7 @@ def p_compexp1(p):
              | GTE tipoDeOperador sumexp
              | LTE tipoDeOperador sumexp
              | NE tipoDeOperador sumexp
+             | EQUALS tipoDeOperador sumexp
              | empty
     '''
 
