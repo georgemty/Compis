@@ -13,7 +13,7 @@ class tablaVar:
         }
 
     def buscarVar(self, id):
-        return id in self.listaVariables #.keys() # contains the keys of the dictionary, as a list
+        return id in self.listaVariables.keys() #.keys() # contains the keys of the dictionary, as a list
 
     def printVar(self): #para vr si esta guardada la variable en la tabla
         print(self.listaVariables.items())

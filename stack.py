@@ -16,8 +16,8 @@ class Stack:
     def push(self, item):
         self.stack.append(item)
 
-    def peek(self):
-        return self.stack[ len(self.stack) - 1]
+    def top(self):
+        return self.stack[len(self.stack)-1]
 
     def size(self):
         return len(self.stack)

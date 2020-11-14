@@ -61,7 +61,6 @@ tokens =[
     'RCURLY'
 ] + list(reserved.values())
 
-
 #equivalents in symbols
 t_SEMICOLON = r'\;'
 t_COMMA = r'\,'
@@ -86,7 +85,6 @@ t_NE = r'\<>'
 t_AND = r'\&&'
 t_OR = r'\|'
 t_ignore = ' \t\n'
-
 
 #id tokens
 def t_ID(t):
@@ -148,6 +146,9 @@ operandoIzquierdo = ''
 operandoDerechoTipo = ''
 operandoIzquierdoTipo = ''
 cuadruplos = []
+tipoDeVariableActual = ''
+end_proc = []
+salto_end_proc = []
 
 avail = Avail()
 
@@ -158,7 +159,6 @@ pilaDeSaltosCondicionales = Stack()
 # parser
 #reglas en minuscula
 # palabrs resevadas en mayuscula
-
 #estructura basica del programa
 def p_prog(p):
     '''
@@ -171,7 +171,9 @@ def p_prog(p):
 # aux del prog para evitar ambiguedades
 def p_prog_1(p):
     '''
-    prog_1 : var methods main_1
+    prog_1 : var cuadruploMain methods cuadruploMainEnd main_1
+           | var cuadruploMain methods
+           | main_1
     '''
 
 def p_agregarProg(p):
@@ -191,12 +193,33 @@ def p_agregarProg(p):
         tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, '', '', 0)
         #print('\nSe agrego funcion ', functionID, ' de tipo ', tipoDeFuncionActual)
 
-
 #main del programa
 def p_main_1(p):
     '''
-    main_1 : MAIN LPAREN RPAREN LCURLY estatutos RCURLY
+    main_1 : MAIN LPAREN RPAREN LCURLY estatutos RCURLY 
     '''
+
+def p_cuadruploMain(p):
+    '''
+    cuadruploMain : 
+    '''
+
+    global pilaDeSaltosCondicionales
+    global cuadruplos
+
+    cuadruplo = ('GOTOMAIN', 'main', -1, None)
+    cuadruplos.append(cuadruplo)
+    pilaDeSaltosCondicionales.push(len(cuadruplos)-1)
+
+def p_cuadruploMainEnd(p):
+    '''
+    cuadruploMainEnd :
+    '''
+    
+    global pilaDeSaltosCondicionales
+
+    end = pilaDeSaltosCondicionales.pop()
+    llenar_quad(end, -1)
 
 def p_estatutos(p):
     '''
@@ -212,7 +235,7 @@ def p_estatutos(p):
 
 def p_for(p):
     '''
-    for : FOR LPAREN asignacion SEMICOLON exp RPAREN LCURLY estatutos RCURLY forOperador forCuadruplo
+    for : FOR LPAREN asignacion TO CTEI RPAREN LCURLY estatutos RCURLY forOperador forCuadruplo
     '''
 
 def p_forOperador(p):
@@ -236,6 +259,7 @@ def p_forCuadruplo(p):
     print("Tipo de resultado ", tipoDeResultado)
     print("ENTRO EL CUADRUPLO FOR")
     if (tipoDeResultado == 'bool'):
+        #pilaDeOperadores.pop()
         print("ENTRO AL IF BOOL")
         valor = pilaDeOperandos.pop()
         generadorQuad = ('GotoF', valor, None, -1)
@@ -248,8 +272,78 @@ def p_forCuadruplo(p):
 
 def p_while(p):
     '''
-    while : WHILE LPAREN expresion RPAREN LCURLY estatutos RCURLY
+    while : WHILE LPAREN exp RPAREN LCURLY estatutos RCURLY
     '''
+    
+def p_whileOperator(p):
+	''' 
+    whileOperator : 
+    '''
+    
+	global pilaDeOperadores, pilaDeSaltosCondicionales, cuadruplos
+	pilaDeOperadores.push('while')
+	pilaDeSaltosCondicionales.push(len(cuadruplos)) 
+    #print("Agrega el while ", pilaDeOperadores.top())
+
+def p_whileCuadruplo(p):
+    '''
+    whileCuadruplo :
+    '''
+
+    global pilaDeNombresDeVariables
+    global pilaDeTiposDeDato
+    global cuadruplos
+    global pilaDeSaltosCondicionales
+
+    tipoResultado = pilaDeTiposDeDato.pop()
+
+    if tipoResultado == 'bool':
+        valor = pilaDeNombresDeVariables.pop()
+        cuadruplo = ('GotoF', valor, None, -1)
+        print('Cuadruplo WHILE --- ', str(cuadruplo))
+        cuadruplos.push(cuadruplo)
+        pilaDeSaltosCondicionales.push(len(cuadruplos)-1)
+    else:
+        print('Error while quad...')
+        SystemExit()
+
+def p_loopEnd(p):
+    '''
+    loopEnd :
+    '''
+
+    global pilaDeNombresDeVariables
+    global pilaDeTiposDeDato
+    global cuadruplos
+    global pilaDeSaltosCondicionales
+    global llenarCuadruplo
+
+    end = pilaDeSaltosCondicionales.pop()
+    retrocede = pilaDeSaltosCondicionales.pop()
+    cuadruplo = ('Goto', None, None, retrocede)
+    llenarCuadruplo(end, -1)
+
+
+def llenar_quad(end, cont):
+    global cuadruplos
+
+    variableAux = list(cuadruplos[end])
+    variableAux[3] = len(cuadruplos)
+    quadruples[end] = tuple(variableAux)
+
+def p_llenar_endproc(p):
+    '''
+    llenar_endproc :
+    '''
+
+    global end_proc
+    global salto_end_proc
+    global cuadruplos
+
+    end = end_proc.pop()
+    temp = list(cuadruplos[end])
+    temp[3] = salto_end_proc
+    cuadruplos[end] = tuple(temp)
 
 def p_if(p):
     '''
@@ -314,6 +408,7 @@ def p_quadruploAsignacion(p):
     global pilaDeNombresDeVariables
     global pilaDeOperadores
     global cuadruplos
+    
 
     if pilaDeOperadores.size() > 0:
         #print("PASA IF 311")
@@ -324,15 +419,21 @@ def p_quadruploAsignacion(p):
             operator = '='
             #print("OPERATOR ", operator)
             operandoIzquierdo = pilaDeOperandos.pop()
-            #print("OPERANDO IZQ ", operandoIzquierdo)
+            print("OPERANDO IZQ ", operandoIzquierdo)
+            
             operandoIzquierdoTipo = pilaDeTiposDeDato.pop()
+            print("TIPO IZQUIERDO---", operandoIzquierdoTipo)
+            
             operandoDerecho = pilaDeOperandos.pop()
-            #print("OPERANDO DER ", operandoDerecho)
+            print("OPERANDO DER ", operandoDerecho)
             operandoDerechoTipo = pilaDeTiposDeDato.pop()
-
+            
+            print("Tipo DERECHO", operandoDerechoTipo)
             resultado = getType(operandoIzquierdoTipo, operandoDerechoTipo, operator)
+            print("GET TYPE RESULTADO DE CUBO", resultado)
 
             if resultado != 'Error':
+                print("GET TYPE RESULTADO DE CUBO", resultado)
                 #print("PASA IF 323")
                 cuadruplosAux = (operator, operandoIzquierdo, None, operandoDerecho)
                 #print("OPERATOR ", operator)
@@ -367,9 +468,14 @@ def p_funcionAsignacion(p):
     global variableID
 
     variableID = p[-2]
+    
+    print("FUnCTION ID", functionID)
+    print("VARIABLE ID", variableID)
+    print("HOLIS", tablaDeFunciones.getTipoDeVariable(variableID, functionID))
 
     if(tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID)):
         pilaDeTiposDeDato.push(tablaDeFunciones.getTipoDeVariable(variableID, functionID))
+        print("PILA DE TIPO DE DATO ASIGNADO", pilaDeTiposDeDato.top())
         pilaDeOperandos.push(variableID)
     else:
         SystemExit()
@@ -387,7 +493,7 @@ def p_var(p):
 #aux de var para agregar variables de otros tipos
 def p_var1(p):
     '''
-    var1 : type ID guardaIdDeVariable varMulti SEMICOLON var2
+    var1 : type ID guardaIdDeVariable agregarVariable varMulti SEMICOLON var2
     '''
 
 # para agregar mas de un tipo de variablea; solo puede ser empty la segunda que entra
@@ -399,10 +505,10 @@ def p_var2(p):
 
 def p_varMulti(p):
     '''
-    varMulti : COMMA ID guardaIdDeVariable varMulti
+    varMulti : COMMA ID guardaIdDeVariable  agregarVariable varMulti
              | empty
     '''
-
+    
 def p_agregarVariable(p):
     '''
     agregarVariable :
@@ -421,6 +527,27 @@ def p_agregarVariable(p):
         else:
             print('La funcion no existe')
             #SystemExit()
+
+'''
+def p_agregarVariableAux(p):
+    
+    agregarVariableAux :
+    
+
+    global variableID
+    global tablaDeFunciones
+    global functionID
+    global pilaDeNombresDeVariables
+    global pilaDeTiposDeDato
+
+    variableID = p[-3]
+    
+    if tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID):
+        tipos = tablaDeFunciones.getTipoDeVariable(variableID, functionID)
+        pilaDeTiposDeDato.push(tipos)
+    else:
+        SystemExit()
+'''
 
 def p_type(p):
     '''
@@ -497,7 +624,6 @@ def p_empty(p):
     '''
     empty :
     '''
-
 #Expresiones
 
 def p_tipoDeOperador(p):
