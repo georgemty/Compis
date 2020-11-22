@@ -1,0 +1,33 @@
+program prueba;
+
+funcion void imprimeVar();
+{
+    var
+    int q;
+    q = 10;
+    print(q);
+}
+
+funcion int Hello();
+{
+    var
+    int j, w;
+    j = 20;
+    w = 0;
+    while (w <= j){
+      print(w);
+      w = w + 1;
+    }
+    return w;
+}
+
+main () {
+  var
+    int i;
+    i = 10;
+    print(i);
+    Hello();
+    imprimeVar();
+
+}
+end
