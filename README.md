@@ -136,3 +136,38 @@ Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementac
 - [x] Tuvimos un avanace significativo en la generacion/implementacion de los cuadruplos
 - [x] Resolvimos de manera correcta los problemas que surgieron al implementar los cuadruplos
 - [x] El main corre de manera exitosa
+
+## Avance 6
+
+###### Generacion de codigo de arreglos/tipos estructurados y maquina virtual: ejecucion de estatutos condicionales
+
+El sexto avanace consistio en resolver problemas que tuvimos de la entrega anterior en cuanto a la generacion de los cuadruplos
+de asignacion, for y while ya que tuvimos problemas para establecer las funciones que se encargaban de realizar el guardado de las variables/funciones en la tabla de funciones/variables de manera exitosa. Asimismo, seguiremos en la elaboracion de los cuadruplos que nos faltan para poder terminar de manera completa y exitosa todos los cuadruplos requeridos para el funcionamiento correcto del compilador.
+
+Este sexto avance consistio en desarrollar los siguientes bloques:
+- Relizar el desarrollo de los cuadruplos faltantes
+- Resolver problemas de implementacion de los cuadruplos
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementacion de los cuadruplos como la resolucion de los problemas de implementacion estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
+
+- [x] Tuvimos un avanace significativo en la generacion/implementacion de los cuadruplos
+- [x] Resolvimos de manera correcta los problemas que surgieron al implementar los cuadruplos
+- [x] El main corre de manera exitosa
+
+## Avance 7
+
+###### Ejecución de Aplicación particular y Documentación parcial
+
+El septimo avance consistio en implementar la memoria una vez terminados los cuadruplos. La creacion de la memoria fue relativamente rapida ya que los cuadruplos de nuestro codigo se estaban comportando de manera correcta. La memoria se encuentra en su propia clase y se llama al main donde se incorpora a los cuadruplos ya implementados. Una vez terminada la memoria e implementada con los cuadruplos de manera correcta se prosiguio a dejar en desarrollo la maquina virtual dado que tenemos previsto terminar la maquina virtual para antes de la entrega final. Asimismo, realizamos documentacion parcial del proyecto la cual se encuentra en esta entrega. 
+
+Este septimo avance consistio en desarrollar los siguientes bloques:
+- Relizar la implementacion de la memoria
+- Incorporar la memoria en los cuadruplos anteriormente creados
+- Realizar documentacion parcial del proyecto
+
+Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementacion de la memoria como la documentacion parcial estuvieran bien implementados y de acuerdo a nuestra definicion de terminado:
+
+- [x] Creamos la memoria del compilador
+- [x] Incorporamos en los cuadruplos el manejo de memoria
+- [x] Documentados parcialmente el avance del proyecto
+- [x] El main corre de manera exitosa
