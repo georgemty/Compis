@@ -129,7 +129,7 @@ def t_error(t):
     print("ERROR at '%s'" % t.value)
     t.lexer.skip(1)
 
-#Declaraciones globales
+#Variables globales
 lexer = lex.lex()
 tablaDeFunciones = tablaFunc()
 tipoDeFuncionActual = ''
@@ -137,7 +137,7 @@ functionID = ''
 variableID = ''
 parametrosID = ''
 
-#pilas para manejo de los cuadruplos
+#Declaracion de pilas/listas
 pilaDeNombres = Stack()
 pilaDeTipos = Stack()
 pilaDeOperadores = Stack()
@@ -150,7 +150,7 @@ salto_end_proceso = 0
 avail = Avail()
 cuentaParametros = 0
 
-#Objetos de clases
+#Clases
 cubo = Cube()
 saltos = Stack()
 saltoFuncion = Stack()
@@ -161,12 +161,12 @@ def p_prog(p):
         '''
         global programId
         programId = p[2]
-        # print ("Nombre programa es ––––––––––––––––––––", programId)
+        # print ("Nombre programa es ––––––––––––––", programId)
         p[0] = 'PROGRAMA COMPILADO'
 
 def p_agregarProg(p):
     'agregarProg :'
-    #tipo de programa
+
     global tipoDeFuncionActual, functionID
     tipoDeFuncionActual = 'programa'
     functionID = 'programa'
@@ -190,10 +190,10 @@ def p_main(p):
 	'''
     global tipoDeFuncionActual
     tipoDeFuncionActual = p[1]
-    # asigna nombre del programa
+    # asigna nombre
     global functionID
     functionID = p[1]
-    #print('_________', fid)
+
     global tablaDeFunciones
     tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
 
@@ -224,7 +224,6 @@ def p_guardaTipoDeVariable(p):
     'guardaTipoDeVariable : '
     global tipoDeVariableActual
     tipoDeVariableActual = p[-1]
-    # print('Tipo de VAR en TABLA de variables:', actual_varTipo)
 
 def p_var(p):
     '''
@@ -238,7 +237,7 @@ def p_vars(p):
     '''
 
 def p_var_2(p):
-    # Recursividad para tener varios tipos de variables
+    # Recursividad
     '''
         var_2 : var_2 type var1 SEMICOLON agregarVar
               | empty
@@ -367,9 +366,7 @@ def p_cuadruploReturn(p):
         if pilaDeOperadores.peek() == 'return':
             operadores2 = pilaDeOperadores.pop()
             result = pilaDeNombres.pop()
-            #result_type = stackTypes.pop()
             cuad = (operadores2, -1, -1, result)
-            # print('QUAD RETURN:', str(quad))
             cuadruplos.append(cuad)
         else:
             print('Type Dissmatch')
@@ -424,10 +421,6 @@ def p_addOperadorName(p):
     'addOperadorName : '
     global pilaDeOperadores
     aux = p[-1]
-    #op = tablaFun.get_op_mem(aux)
-    #print('MEMORY OPERATOR', op, 'de', aux)
-    #meter a la pila de operadores el op, este asocia el operador a la direccion de memoria asignada SE DEBE ARREGLAR CUADRUPLOS PARA QUE
-    # DEBE QUEDAR operadores.push(op)
     pilaDeOperadores.push(aux)
 
 def p_cuadruploAsignacion(p):
@@ -435,8 +428,7 @@ def p_cuadruploAsignacion(p):
     global pilaDeTipos, pilaDeNombres, pilaDeOperadores, cuadruplos
 
     if pilaDeOperadores.size() > 0:
-        # if operadores.peek() == '=':
-        # sacar la direccion de memoria del operador antes que nada
+        # sacar la direccion de memoria del operador
         op = tablaDeFunciones.get_op_mem(pilaDeOperadores.peek())
         operadores2 = pilaDeOperadores.pop()
         operando_derecho = pilaDeNombres.pop()
@@ -489,7 +481,7 @@ def p_agregarParametro(p):
         else:
           SystemExit()
     # else:
-    #     print("no se puede añadir none")
+    #     print("no se puede agregar")
 
 def p_param2(p):
     '''
@@ -617,7 +609,6 @@ def p_escritura2(p):
 def p_operadorPrint(p):
     'operadorPrint : '
     global pilaDeOperadores
-    #print('PRINT OPERATOR',)
     pilaDeOperadores.push('print')
 
 def p_cuadruploPrint(p):
@@ -630,7 +621,7 @@ def p_cuadruploPrint(p):
             valor = pilaDeNombres.pop()
             pilaDeTipos.pop()
             cuad = (op, None, None, valor)
-            # print('Cuadruplo:', str(quad))
+            # print('Cuadruplo:', str(cuad))
             cuadruplos.append(cuad)
 
 def p_guardaCTE(p):
@@ -653,7 +644,6 @@ def p_guardaCTE(p):
     if (t == int):
         pilaDeTipos.push('int')
         pilaDeNombres.push(cte_address)
-        #print("tipo y nombre que se ven", cte)
 
     elif (t == float):
         pilaDeTipos.push('float')
@@ -694,7 +684,7 @@ def p_cuadruploFor(p):
     if resultado == 'bool':
         valor = pilaDeNombres.pop()
         cuad = ('GOTOV', valor, None, -1)
-        # print('quad:', str(quad))
+        # print('quad:', str(cuad))
         cuadruplos.append(cuad)
         saltos.push(len(cuadruplos)-1)
     else:
@@ -734,7 +724,7 @@ def p_cuadruploIf(p):
     if resultado == 'bool':
         valor = pilaDeNombres.pop()
         cuad = ('GOTOF', valor, None, -1)
-        # print('quad:', str(quad))
+        # print('cuad:', str(cuad))
         cuadruplos.append(cuad)
         saltos.push(len(cuadruplos)-1)
     else:
@@ -745,7 +735,6 @@ def p_endIf(p):
     'endIf : '
     global saltos
     end = saltos.pop()
-    # print("el end que debe guardar en F:", end, '\n')
     llenarCuadruplo(end, -1)
 
 def p_else(p):
@@ -762,7 +751,7 @@ def p_cuadruploElse(p):
     fAux = saltos.pop()
     saltos.push(len(cuadruplos)-1)
     llenarCuadruplo(fAux, -1)
-    # print('quad:', str(quad))
+    # print('cuad:', str(cuad))
 
 #--------------------------------AQUI termina codigo referente al metodo IF-ELSE--------------
 
@@ -777,7 +766,6 @@ def p_operadorWhile(p):
     'operadorWhile :'
     global pilaDeOperadores, cuadruplos, saltos
     op = tablaDeFunciones.get_op_mem('while')
-    # print('OPERATOR WHILE MEMORY', op)
     pilaDeOperadores.push(op)
     saltos.push(len(cuadruplos))
 
@@ -931,7 +919,7 @@ def generaCuadruplo():
     global pilaDeOperadores, pilaDeNombres, pilaDeTipos, cuadruplos
 
     if pilaDeOperadores.size() > 0:
-        # Sacar direccion de   al operador antes que nada
+        # Sacar direccion operador
         op = tablaDeFunciones.get_op_mem(pilaDeOperadores.peek())
         operando2 = pilaDeOperadores.pop()
         operando_derecho = pilaDeNombres.pop()
@@ -944,20 +932,14 @@ def generaCuadruplo():
         if result_type != 'ERROR':
             result = avail.next()
 
-            ##### ASIGNAR MEMORIA A TEMPORAL (result en este caso) ########
             tablaDeFunciones.add_temp_mem(result_type, result, functionID)
             var_temp = tablaDeFunciones.get_temp_mem(result)
-            # print(result, 'result temporal-----------------------------------', var_temp, result_type, fid)
 
-            # quad = (op, operando_izquierdo, operando_derecho, result)
-            quad = (op, operando_izquierdo, operando_derecho, var_temp)
-           # print('Cuadruplo: ' + str(quad))
+            cuad = (op, operando_izquierdo, operando_derecho, var_temp)
+           # print('Cuadruplo: ' + str(cuad))
 
-            cuadruplos.append(quad)
-            # stackName.push(result)
-            # stackTypes.push(result_type)
+            cuadruplos.append(cuad)
 
-            ### agregar a la pila de nombres, la direccion en vez de nombre ######
             pilaDeNombres.push(var_temp)
             pilaDeTipos.push(result_type)
 
@@ -973,7 +955,7 @@ def generaCuadruplo():
 
 def p_error(p):
     if p is not None:
-        # Esto evita que se meta en un ciclo infinito al encontrar errores de sintaxis
+
         parser.errok()
         print('Syntax Error in input!', p)
         sys.exit()
@@ -999,30 +981,23 @@ if __name__ == '__main__':
             tok = lexer.token()
             if not tok:
                 break
-            # print(tok)
 
         if (parser.parse(informacion, tracking = True) == 'PROGRAMA COMPILADO'):
             print("Correct Syntax")
 
-            ###### archivo-salida.py ######
-            f = open ('quadruples.txt','w')
+            #------------------------------Archivo de cuadruplos----------------------------------
+            f = open ('cuadruplos.txt','w')
             for i in cuadruplos:
                 f.write(str(i) + '\n')
-                #f.write('\n')
             f.close()
 
-            ##### archivo de salida de constantes #######
-            c = open("constants.txt", 'w')
+            #------------------------------Archivo de constantes----------------------------------
+            c = open("constantes.txt", 'w')
             for i in array:
                 c.write(str(i) + '\n')
             c.close()
 
-            # p = open("pendientes.txt", 'w')
-            # for i in pendiente:
-            #     p.write(str(i) + '\n')
-            # p.close()
-
-            # ### Mandar las funciones y sus parametros en un txt ###
+            #------------------------------Archivo de funciones----------------------------------
             d = open('funciones.txt', 'w')
             for i in tablaDeFunciones.funciones.keys():
                for j in tablaDeFunciones.funciones[i]['variables'].listaVariables.items():
@@ -1030,16 +1005,8 @@ if __name__ == '__main__':
                    d.write(str(quadFunciones) + '\n')
             d.close()
 
-            #Maquina virtual
-            #vm = VirtualMachine()
-
-            #vm.rebuildCte()
-            #q = vm.clean_quad()
-            #vm.reading(q)
-
         else:
             print("Syntax error")
 
     except EOFError:
-        # print("ERROREOF")
         print(EOFError)
