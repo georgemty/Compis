@@ -6,6 +6,7 @@ from tablaDeVariables import tablaVar
 from cube import Cube
 from stack import Stack
 from memoria import Memory
+from virtualMachine import *
 import sys
 import json
 
@@ -84,7 +85,7 @@ t_MUL = r'\*'
 t_DIV = r'\/'
 t_GT = r'\>'
 t_LT = r'\<'
-t_GTE = r'\=>'
+t_GTE = r'\>='
 t_LTE = r'\<='
 t_NE = r'\!='
 t_AND = r'\&&'
@@ -971,7 +972,7 @@ parser = yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'prueba.txt'
+        nombreArchivo = 'pruebaFibonacci.txt'
         arch = open(nombreArchivo, 'r')
         print("El archivo a leer es: " + nombreArchivo)
         informacion = arch.read()
@@ -1004,6 +1005,12 @@ if __name__ == '__main__':
                    quadFunciones = (i, j[1]['type'], j[0], j[1]['address'])
                    d.write(str(quadFunciones) + '\n')
             d.close()
+
+            #Maquina virtual
+            vm = VirtualMachine()
+            vm.rebuildCte()
+            q = vm.clean_quad()
+            vm.reading(q)
 
         else:
             print("Syntax error")

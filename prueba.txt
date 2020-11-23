@@ -1,33 +1,37 @@
 program prueba;
 
-funcion void imprimeVar();
-{
-    var
-    int q;
-    q = 10;
-    print(q);
+funcion void imprime();{
+    var int p;
+    p = 10;
+
+    print(p);
 }
 
-funcion int Hello();
-{
-    var
-    int j, w;
-    j = 20;
-    w = 0;
-    while (w <= j){
-      print(w);
-      w = w + 1;
+funcion int CicloWhile();{
+    var int j, k;
+
+    k = 20;
+    j = 0;
+
+    while (j <= k){
+
+      print(j);
+      j = j + 1;
+
     }
-    return w;
+
+    return j;
+
 }
 
-main () {
-  var
-    int i;
-    i = 10;
-    print(i);
-    Hello();
-    imprimeVar();
+main (){
+
+  var int i;
+  i = 10;
+
+  print(i);
+  CicloWhile();
+  imprime();
 
 }
 end
