@@ -238,7 +238,7 @@ def p_vars(p):
     '''
 
 def p_var_2(p):
-    # Recursividad
+    #----------------Aqui se maneja la recursidad----------------
     '''
         var_2 : var_2 type var1 SEMICOLON agregarVar
               | empty
