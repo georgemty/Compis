@@ -1,4 +1,4 @@
-# Proyecto final de compiladores :computer:
+#    :computer: Proyecto final de compiladores :computer:
 Este repositorio, contiene el codigo que conforma el proyecto final de la
 clase de compiladores. La finalidad de este proyecto, es construir un compilador
 basado en **Python** el cual sea capaz de recibir un *input grafico* desde una
