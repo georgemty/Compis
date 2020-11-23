@@ -1,0 +1,41 @@
+program fibonacci;
+
+funcion int fibonacci();{
+
+  var int t0, t1, t2, n, x, proximoTermino;
+
+  t1 = 0;
+  t2 = 1;
+  n = 0;
+  proximoTermino = 0;
+
+  print("teclea un valor para realizar los n numeros de la secuencia fibonacci");
+  read(n);
+
+    for(from x = 0 to x <= n){
+
+      if (x == 1){
+      print( t2 );
+
+      }
+
+      if ( x >= 2){
+
+      proximoTermino = t1 + t2;
+      t1 = t2;
+      t2 = proximoTermino;
+      print(proximoTermino);
+
+      }
+
+      x = x + 1;
+
+    }
+  return x;
+}
+
+main () {
+
+    fibonacci();
+}
+end
