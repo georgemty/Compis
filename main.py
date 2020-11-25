@@ -238,7 +238,7 @@ def p_vars(p):
     '''
 
 def p_var_2(p):
-    # Recursividad
+    #----------------Aqui se maneja la recursidad----------------
     '''
         var_2 : var_2 type var1 SEMICOLON agregarVar
               | empty
@@ -972,7 +972,7 @@ parser = yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebaFibonacci.txt'
+        nombreArchivo = 'prueba.txt'
         arch = open(nombreArchivo, 'r')
         print("El archivo a leer es: " + nombreArchivo)
         informacion = arch.read()

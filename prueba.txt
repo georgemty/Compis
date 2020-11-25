@@ -1,16 +1,9 @@
 program prueba;
 
-funcion void imprime();{
-    var int p;
-    p = 10;
-
-    print(p);
-}
-
 funcion int CicloWhile();{
     var int j, k;
 
-    k = 20;
+    k = 40;
     j = 0;
 
     while (j <= k){
@@ -27,11 +20,11 @@ funcion int CicloWhile();{
 main (){
 
   var int i;
+  float l;
   i = 10;
 
   print(i);
   CicloWhile();
-  imprime();
 
 }
 end
