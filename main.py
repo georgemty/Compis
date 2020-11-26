@@ -972,7 +972,7 @@ parser = yacc.yacc()
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'prueba.txt'
+        nombreArchivo = 'pruebaFibonacci.txt'
         arch = open(nombreArchivo, 'r')
         print("El archivo a leer es: " + nombreArchivo)
         informacion = arch.read()
