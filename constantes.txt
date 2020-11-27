@@ -1,1 +1,5 @@
-(2, 45000)
+('"teclea el valor de n para generar el factorial"', 48000)
+(1, 45000)
+(0, 45001)
+('"No se puede hacer factorial de negativos"', 48001)
+('"Resultado"', 48002)

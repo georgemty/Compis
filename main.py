@@ -281,6 +281,7 @@ def p_agregarVar(p):
     global tipoDeVariableActual
     if not variableID == None:
 
+        #Cambiamos 
         if tablaDeFunciones.buscarFun(functionID):
           tablaDeFunciones.agregarVariable(functionID, tipoDeVariableActual, variableID)
         else:
@@ -293,50 +294,129 @@ def p_especial(p):
              | DETERMINANTE
     '''
 
-def p_setArr(p):
-    ''' 
-    setArr : 
-    '''
-    global variableID, functionID
-    tablaDeFunciones.setArray(functionID, variableID, p[-1])
-
 
 def p_arr(p):
     '''
-    arr : LBRACKET CTEI setArr RBRACKE T
-        | LBRACKET exp setArr arrQuad RBRACKET
+    arr : LBRACKET CTEI RBRACKET
+        | LBRACKET exp RBRACKET
     '''
 
-def p_arrQuad(p):
-	''' arrQuad : '''
-	global pilaDeNombres
-    global pilaDeOperadores
-    global pilaDeTipos
-    global functionID
-    global variableID
-    global functionID
-    
-	lim = tablaDeFunciones.getArrSize(functionID, variableID) -1
-	value = pilaDeNombres[-1]
-	quad = ('ver', value, 0, lim)
-	cuadruplos.append(quad)
-	quad = (operators['ver'], tablaDeFunciones.getVarAddress(functionID, value) , 0, lim)
-	quadruplesMem.append(quad)
-	aux = '*'+avail.next()
+def p_mat(p):
+    '''
+    mat : LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET exp RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET CTEI RBRACKET LBRACKET exp RBRACKET
+    '''
 
-	tablaDeFunciones.addTempVar(functionID, 'int', aux)
-	base = pilaDeNombres.pop()
-	pilaDeTipos.pop()
-	offset = pilaDeNombres.pop()
-	pilaDeTipos.pop()
-	quad = ('+dir', tablaDeFunciones.getVarAddress(functionID, offset), base, aux)
-	cuadruplos.append(quad)
-	tablaDeFunciones.addCtetoFun(functionID, 'int', tablaDeFunciones.getVarAddress(functionID, offset))
-	quad = (pilaDeOperadores['+dir'], tablaDeFunciones.getVarAddress(functionID, offset), tablaDeFunciones.getVarAddress(functionID, base), tablaDeFunciones.getVarAddress(functionID, aux))
-	quadruplesMem.append(quad)
-	pilaDeNombres.append(aux)
-	quad = (pilaDeOperadores['+dir'], tablaDeFunciones.getVarAddress(currentFunId, offset), funTable.getVarAddress(currentFunId, base), funTable.getVarAddress(currentFunId, aux))	#quad = (operator['+'], funTable.getVarAddress(currentFunId, operandStack.pop()), operandStack.pop(), aux)
+#--------------------------------AQUI termina codigo referente a variables---------------------------------
 
+#--------------------------------AQUI inicia codigo referente a funciones-----------=-----------------------
+
+def p_metodos(p):
+    '''
+    metodos : funcion metodos
+            | 
+
+    '''
+
+def p_funcion(p):
+    '''
+    funcion : FUNCION VOID funcion_1
+            | FUNCION INT funcion_2
+            | FUNCION CHAR funcion_2
+            | FUNCION FLOAT funcion_2
+    '''
+def p_funcion_1(p):
+    '''
+    funcion_1 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RCURLY endFuncion
+    '''
+
+def p_funcion_2(p):
+    '''
+    funcion_2 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RETURN operadorReturn exp cuadruploReturn SEMICOLON RCURLY endFuncion
+    '''
+
+def p_guardaFuncion(p):
+    ' guardaFuncion : '
+
+def p_mat(p):
+    '''
+    mat : LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET exp RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET CTEI RBRACKET LBRACKET exp RBRACKET
+    '''
+
+#--------------------------------AQUI termina codigo referente a variables---------------------------------
+
+#--------------------------------AQUI inicia codigo referente a funciones-----------=-----------------------
+
+def p_metodos(p):
+    '''
+    metodos : funcion metodos
+            | 
+
+    '''
+
+def p_funcion(p):
+    '''
+    funcion : FUNCION VOID funcion_1
+            | FUNCION INT funcion_2
+            | FUNCION CHAR funcion_2
+            | FUNCION FLOAT funcion_2
+    '''
+def p_funcion_1(p):
+    '''
+    funcion_1 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RCURLY endFuncion
+    '''
+
+def p_funcion_2(p):
+    '''
+    funcion_2 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RETURN operadorReturn exp cuadruploReturn SEMICOLON RCURLY endFuncion
+    '''
+
+def p_guardaFuncion(p):
+    ' guardaFuncion : '
+
+def p_mat(p):
+    '''
+    mat : LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET exp RBRACKET
+        | LBRACKET exp RBRACKET LBRACKET CTEI RBRACKET
+        | LBRACKET CTEI RBRACKET LBRACKET exp RBRACKET
+    '''
+
+#--------------------------------AQUI termina codigo referente a variables---------------------------------
+
+#--------------------------------AQUI inicia codigo referente a funciones-----------=-----------------------
+
+def p_metodos(p):
+    '''
+    metodos : funcion metodos
+            | 
+
+    '''
+
+def p_funcion(p):
+    '''
+    funcion : FUNCION VOID funcion_1
+            | FUNCION INT funcion_2
+            | FUNCION CHAR funcion_2
+            | FUNCION FLOAT funcion_2
+    '''
+def p_funcion_1(p):
+    '''
+    funcion_1 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RCURLY endFuncion
+    '''
+
+def p_funcion_2(p):
+    '''
+    funcion_2 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RETURN operadorReturn exp cuadruploReturn SEMICOLON RCURLY endFuncion
+    '''
+
+def p_guardaFuncion(p):
+    ' guardaFuncion : '
 
 def p_mat(p):
     '''
@@ -1040,7 +1120,7 @@ parser = yacc.yacc(debug = True)
 
 if __name__ == '__main__':
     try:
-        nombreArchivo = 'pruebaFibonacci.txt'
+        nombreArchivo = 'pruebaFactorial.txt'
         arch = open(nombreArchivo, 'r')
         print("El archivo a leer es: " + nombreArchivo)
         informacion = arch.read()

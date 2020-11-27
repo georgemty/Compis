@@ -41,8 +41,6 @@ class tablaFunc():
             print('La variable', id, 'no existe...')
 
     #Arreglos
-    def setArray(self, fid, id, size):
-		self.funlst[fid]['vars'].toggleArray(id, size, fid)
 
 
     def agregarVariable(self, fid, type, id):
