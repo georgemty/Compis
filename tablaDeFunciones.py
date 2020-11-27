@@ -27,6 +27,7 @@ class tablaFunc():
 
 
     def buscarVariableEnTablaFunciones(self, fid, id):
+        print(id + " buscar")
         if self.funciones[fid]['variables'].buscarVar(id) or self.funciones['programa']['variables'].buscarVar(id):
             return True
         else:
@@ -39,7 +40,9 @@ class tablaFunc():
         else:
             print('La variable', id, 'no existe...')
 
-
+    #Arreglos
+    def setArray(self, fid, id, size):
+		self.funlst[fid]['vars'].toggleArray(id, size, fid)
 
 
     def agregarVariable(self, fid, type, id):

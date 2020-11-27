@@ -93,7 +93,12 @@ t_OR = r'\|'
 t_TRANSPUESTA = r'\¡'
 t_DETERMINANTE = r'\$'
 t_INVERSA = r'\?'
-t_ignore = ' \t\n'
+
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+t_ignore = ' \t'
 
 
 #id tokens
@@ -127,6 +132,7 @@ def t_CTEC(t):
 
 #if errors are detected it prints error message
 def t_error(t):
+    print("Error in line " + str(t.lineno))
     print("ERROR at '%s'" % t.value)
     t.lexer.skip(1)
 
@@ -145,11 +151,13 @@ pilaDeOperadores = Stack()
 cuadruplos = []
 array = []
 funciones = []
+returnaddress = []
 pendiente = 0
 end_proceso = []
 salto_end_proceso = 0
 avail = Avail()
 cuentaParametros = 0
+primerParametro = 0
 
 #Clases
 cubo = Cube()
@@ -208,6 +216,7 @@ def p_cuadruploMain(p):
 def p_mainEnd(p):
     'mainEnd : '
     end = saltos.pop()
+    
     llenarCuadruplo(end, -1)
 
 #--------------------------------AQUI termina codigo referente al MAIN---------------------------------
@@ -229,7 +238,7 @@ def p_guardaTipoDeVariable(p):
 def p_var(p):
     '''
     var : vars
-        | empty
+        | 
     '''
 
 def p_vars(p):
@@ -241,7 +250,7 @@ def p_var_2(p):
     #----------------Aqui se maneja la recursidad----------------
     '''
         var_2 : var_2 type var1 SEMICOLON agregarVar
-              | empty
+              |
     '''
 
 def p_var1(p):
@@ -255,8 +264,15 @@ def p_var1(p):
          | ID mat especial
          | empty
     '''
-    global variableID
-    variableID = p[1]
+    if(len(p) > 0):
+        global variableID
+        variableID = p[1]
+
+def p_empty(p):
+    '''
+    empty :
+    '''
+    pass
 
 def p_agregarVar(p):
     'agregarVar :'
@@ -277,12 +293,50 @@ def p_especial(p):
              | DETERMINANTE
     '''
 
+def p_setArr(p):
+    ''' 
+    setArr : 
+    '''
+    global variableID, functionID
+    tablaDeFunciones.setArray(functionID, variableID, p[-1])
+
+
 def p_arr(p):
     '''
-    arr : LBRACKET CTEI RBRACKET
-        | LBRACKET exp RBRACKET
-
+    arr : LBRACKET CTEI setArr RBRACKE T
+        | LBRACKET exp setArr arrQuad RBRACKET
     '''
+
+def p_arrQuad(p):
+	''' arrQuad : '''
+	global pilaDeNombres
+    global pilaDeOperadores
+    global pilaDeTipos
+    global functionID
+    global variableID
+    global functionID
+    
+	lim = tablaDeFunciones.getArrSize(functionID, variableID) -1
+	value = pilaDeNombres[-1]
+	quad = ('ver', value, 0, lim)
+	cuadruplos.append(quad)
+	quad = (operators['ver'], tablaDeFunciones.getVarAddress(functionID, value) , 0, lim)
+	quadruplesMem.append(quad)
+	aux = '*'+avail.next()
+
+	tablaDeFunciones.addTempVar(functionID, 'int', aux)
+	base = pilaDeNombres.pop()
+	pilaDeTipos.pop()
+	offset = pilaDeNombres.pop()
+	pilaDeTipos.pop()
+	quad = ('+dir', tablaDeFunciones.getVarAddress(functionID, offset), base, aux)
+	cuadruplos.append(quad)
+	tablaDeFunciones.addCtetoFun(functionID, 'int', tablaDeFunciones.getVarAddress(functionID, offset))
+	quad = (pilaDeOperadores['+dir'], tablaDeFunciones.getVarAddress(functionID, offset), tablaDeFunciones.getVarAddress(functionID, base), tablaDeFunciones.getVarAddress(functionID, aux))
+	quadruplesMem.append(quad)
+	pilaDeNombres.append(aux)
+	quad = (pilaDeOperadores['+dir'], tablaDeFunciones.getVarAddress(currentFunId, offset), funTable.getVarAddress(currentFunId, base), funTable.getVarAddress(currentFunId, aux))	#quad = (operator['+'], funTable.getVarAddress(currentFunId, operandStack.pop()), operandStack.pop(), aux)
+
 
 def p_mat(p):
     '''
@@ -299,7 +353,7 @@ def p_mat(p):
 def p_metodos(p):
     '''
     metodos : funcion metodos
-            | empty
+            | 
 
     '''
 
@@ -310,7 +364,6 @@ def p_funcion(p):
             | FUNCION CHAR funcion_2
             | FUNCION FLOAT funcion_2
     '''
-
 def p_funcion_1(p):
     '''
     funcion_1 : ID guardaFuncion LPAREN param2 RPAREN SEMICOLON LCURLY var funcionGOTO estatutos RCURLY endFuncion
@@ -326,15 +379,14 @@ def p_guardaFuncion(p):
     global tipoDeFuncionActual
     global functionID
     global tablaDeFunciones
-
-    if p[-1] == 'main':
-        tipoDeFuncionActual = 'main'
-        functionID = p[-1]
-        tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
-    else:
-        tipoDeFuncionActual = p[-2]
-        functionID = p[-1]
-        tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
+    #if p[-1] == 'main':
+     #   tipoDeFuncionActual = 'main'
+      #  functionID = p[-1]
+       # tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
+    #else:
+    tipoDeFuncionActual = p[-2]
+    functionID = p[-1]
+    tablaDeFunciones.agregarFuncion(tipoDeFuncionActual, functionID, 0, [], [], 0)
 
 def p_funcionGOTO(p):
     'funcionGOTO : '
@@ -367,6 +419,9 @@ def p_cuadruploReturn(p):
         if pilaDeOperadores.peek() == 'return':
             operadores2 = pilaDeOperadores.pop()
             result = pilaDeNombres.pop()
+            print("operador2 ---------------------------", operadores2)
+            print("result -------------------------------", result)
+            returnaddress.append(result)
             cuad = (operadores2, -1, -1, result)
             cuadruplos.append(cuad)
         else:
@@ -376,7 +431,7 @@ def p_cuadruploReturn(p):
 def p_estatutos(p):
     '''
     estatutos : estatutos_2 estatutos
-              | empty
+              | 
     '''
 
 
@@ -408,13 +463,16 @@ def p_guardaVariable_2(p):
     variableID = p[-1]
 
     if tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID):
+        #print("print")
+        #print(functionID)
+        #print(variableID)
+        print("---" + functionID + " " + variableID + "---")
         tipos = tablaDeFunciones.getTipoDeVariable(variableID, functionID)
         tablaDeFunciones.add_var_mem(tipos, variableID, functionID)
         memVar = tablaDeFunciones.get_var_mem(variableID)
 
         pilaDeTipos.push(tipos)
         pilaDeNombres.push(memVar)
-
     else:
         SystemExit()
 
@@ -426,15 +484,28 @@ def p_addOperadorName(p):
 
 def p_cuadruploAsignacion(p):
     'cuadruploAsignacion : '
-    global pilaDeTipos, pilaDeNombres, pilaDeOperadores, cuadruplos
+    global pilaDeTipos, pilaDeNombres, pilaDeOperadores, cuadruplos, variableID,functionID
 
     if pilaDeOperadores.size() > 0:
         # sacar la direccion de memoria del operador
         op = tablaDeFunciones.get_op_mem(pilaDeOperadores.peek())
         operadores2 = pilaDeOperadores.pop()
         operando_derecho = pilaDeNombres.pop()
+        print("--Operando Derecho-----", operando_derecho)
         operando_derecho_tipo = pilaDeTipos.pop()
         operando_izquierdo = pilaDeNombres.pop()
+        print("--Operando Izq-----", operando_izquierdo)
+        if(operando_izquierdo == None):
+            variableID = p[-5]
+            if tablaDeFunciones.buscarVariableEnTablaFunciones(functionID, variableID):
+                #print("print")
+                #print(functionID)
+                #print(variableID)
+                tipos = tablaDeFunciones.getTipoDeVariable(variableID, functionID)
+                tablaDeFunciones.add_var_mem(tipos, variableID, functionID)
+                memVar = tablaDeFunciones.get_var_mem(variableID)
+                operando_izquierdo = memVar
+        
         operando_izquierdo_tipo = pilaDeTipos.pop()
         result = cubo.getTipo(operando_izquierdo_tipo, operando_derecho_tipo, operadores2)
 
@@ -459,11 +530,10 @@ def p_param(p):
             | ID mat COMMA param
             | ID mat
             | ID mat especial
-            | empty
+            | 
     '''
     global primerParametro
     primerParametro = p[1]
-
 
 def p_agregarParametro(p):
     'agregarParametro :'
@@ -487,7 +557,7 @@ def p_agregarParametro(p):
 def p_param2(p):
     '''
     param2 : param2 type param
-           | empty
+           | 
     '''
 
 #--------------------------------AQUI termina codigo referente a parametros----------------------
@@ -497,7 +567,6 @@ def p_param2(p):
 def p_llamada(p):
     '''
     llamada : ID llamadaEra LPAREN auxiliarExp cuadruploParametros RPAREN cuadruploGoSub endProcesoLlena
-
     '''
 
 def p_llamadaEra(p):
@@ -512,8 +581,7 @@ def p_llamadaEra(p):
 def p_auxiliarExp(p):
     '''
     auxiliarExp : exp
-                | exp  COMMA  auxiliarExp
-                | empty
+                | exp  COMMA  exp
     '''
 
 def p_cuadruploParametros(p):
@@ -557,6 +625,8 @@ def p_endProcesoLlena(p):
     temp = list(cuadruplos[end])
     temp[3] = salto_end_proceso
     cuadruplos[end] = tuple(temp)
+    pilaDeNombres.push(returnaddress.pop())
+
 
 #--------------------------------AQUI termina codigo referente al metodo LLAMADA----------------------
 
@@ -602,9 +672,7 @@ def p_escritura1(p):
 def p_escritura2(p):
      '''
     escritura2 : COMILLA CTESTRING COMILLA
-               | CTEI guardaCTE cuadruploPrint
-               | CTEF guardaCTE cuadruploPrint
-               | exp
+               | exp cuadruploPrint
     '''
 
 def p_operadorPrint(p):
@@ -741,7 +809,7 @@ def p_endIf(p):
 def p_else(p):
     '''
     else : ELSE cuadruploElse LCURLY estatutos RCURLY
-         | empty
+         | 
     '''
 
 def p_cuadruploElse(p):
@@ -801,7 +869,7 @@ def p_endWhile(p):
 def p_exp(p):
     '''
     exp : nexp
-        | nexp OR addOperadorName nexp cuadruploOr
+        | exp OR addOperadorName nexp cuadruploOr
     '''
 
 def p_cuadruploOr(p):
@@ -813,8 +881,8 @@ def p_cuadruploOr(p):
 
 def p_nexp(p):
     '''
-    nexp : compexp
-         | compexp AND addOperadorName compexp cuadruploAnd
+    nexp : compexp1
+         | nexp AND addOperadorName compexp1 cuadruploAnd
     '''
 
 def p_cuadruploAnd(p):
@@ -832,12 +900,13 @@ def p_compexp(p):
 
 def p_compexp1(p):
     '''
-    compexp1 : sumexp GT addOperadorName sumexp cuadruploComparacion
-             | sumexp LT addOperadorName sumexp cuadruploComparacion
-             | sumexp GTE addOperadorName sumexp cuadruploComparacion
-             | sumexp LTE addOperadorName sumexp cuadruploComparacion
-             | sumexp NE addOperadorName sumexp cuadruploComparacion
-             | sumexp COMPARE addOperadorName sumexp cuadruploComparacion
+    compexp1 : compexp1 GT addOperadorName sumexp cuadruploComparacion
+             | compexp1 LT addOperadorName sumexp cuadruploComparacion
+             | compexp1 GTE addOperadorName sumexp cuadruploComparacion
+             | compexp1 LTE addOperadorName sumexp cuadruploComparacion
+             | compexp1 NE addOperadorName sumexp cuadruploComparacion
+             | compexp1 COMPARE addOperadorName sumexp cuadruploComparacion
+             | sumexp
     '''
 
 def p_cuadruploComparacion(p):
@@ -850,8 +919,8 @@ def p_cuadruploComparacion(p):
 def p_sumexp(p):
     '''
     sumexp : mulexp
-           | mulexp PLUS addOperadorName mulexp cuadruploSuma
-           | mulexp MINUS addOperadorName mulexp cuadruploSuma
+           | sumexp PLUS addOperadorName mulexp cuadruploSuma
+           | sumexp MINUS addOperadorName mulexp cuadruploSuma
     '''
 
 def p_cuadruploSuma(p):
@@ -864,8 +933,8 @@ def p_cuadruploSuma(p):
 def p_mulexp(p):
     '''
     mulexp : pexp
-           | pexp MUL addOperadorName pexp cuadruploMultiplicacion
-           | pexp DIV addOperadorName pexp cuadruploMultiplicacion
+           | mulexp MUL addOperadorName pexp cuadruploMultiplicacion
+           | mulexp DIV addOperadorName pexp cuadruploMultiplicacion
     '''
 
 def p_cuadruploMultiplicacion(p):
@@ -910,11 +979,8 @@ def p_guardaID(p):
             else:
                  SystemExit()
 
-def p_empty(p):
-    '''
-    empty :
-    '''
-    p[0] = None
+
+    
 
 def generaCuadruplo():
     global pilaDeOperadores, pilaDeNombres, pilaDeTipos, cuadruplos
@@ -958,8 +1024,10 @@ def p_error(p):
     if p is not None:
 
         parser.errok()
+        print("Error in line " + str(p.lineno))
         print('Syntax Error in input!', p)
         sys.exit()
+        
 
     else:
         print('Unexpected end of input....')
@@ -968,7 +1036,7 @@ def p_error(p):
 
 #--------------------------------AQUI inicia codigo referente al MAIN-------------------
 
-parser = yacc.yacc()
+parser = yacc.yacc(debug = True)
 
 if __name__ == '__main__':
     try:
@@ -1011,7 +1079,6 @@ if __name__ == '__main__':
             vm.rebuildCte()
             q = vm.clean_quad()
             vm.reading(q)
-
         else:
             print("Syntax error")
 

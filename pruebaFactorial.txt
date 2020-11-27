@@ -1,29 +1,19 @@
 program factorial;
-
 main(){
-
   var int i, n, x, factorial;
-
   print("teclea el valor de n para generar el factorial");
   read (n);
-
   factorial = 1;
-
   if(n < 0){
-
     print("No se puede hacer factorial de negativos");
-
   }
   else {
-
       for(from x = 1 to x <= n){
-
         factorial = factorial * x;
         x = x + 1;
-
       }
       print("Resultado");
-      print (factorial);
+      print(factorial);
      }
 }
 end

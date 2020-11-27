@@ -1,0 +1,24 @@
+program factorial;
+
+var int numero, resultado;
+
+funcion int factorial(int numero);{
+    if(numero == 1){
+        numero = 1;
+    } else{
+        numero = numero * factorial(numero  - 1);
+    }
+    return numero;
+}
+
+main( ){
+    read(numero);
+    if(numero < 0){
+        print("No se pueden negativos");
+    }
+    else {
+        resultado = factorial(numero);
+        print(resultado);
+    } 
+}
+end
