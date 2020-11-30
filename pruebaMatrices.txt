@@ -1,0 +1,77 @@
+program Matrices;
+
+var
+    int arrayA[5][5], arrayB[5][5], renglonesA, renglonesB, columnasA, columnasB, i, j;
+
+funcion void capturarMatrices(){
+
+    print("Introduce el numero de renglones de la matriz A:");
+    read(renglonesA);
+
+    print("Introduce el numero de columnas de la matriz A:");
+    read(columnasA);
+
+    print("Introduce los elementos");
+    for(from i = 0 to renglonesA){
+        for(from j = 0 to columnasA){
+            read( arrayA[j][i] );
+        }
+    }
+
+    print("La matriz A es: ");
+    print(arrayA);
+
+    print("Introduce el numero de renglones de la matriz B:");
+    read(renglonesB);
+
+    print("Introduce el numero de columnas de la matriz B:");
+    read(columnasB);
+
+    print("Introduce los elementos");
+    for(from i = 0 to renglonesB){
+        for(from j = 0 to columnasB){
+            read( arrayB[j][i] );
+        }
+    }
+
+    print("La matriz B es: ");
+    print(arrayB);
+
+    print("La transpuesta de la matriz A es:");
+    print(arrayA¡);
+
+    print("La transpuesta de la matriz B es:");
+    print(arrayB¡);
+
+    if(renglonesB == RenglonesA && columnasB == columnasA){
+
+      print("El resultado de la suma de las matrices es:");
+      print(arrayA + arrayB);
+
+      print("El resultado de la resta de las matrices es:");
+      print(arrayA - arrayB);
+
+    }else{
+
+      print("No es posible hacer la suma/resta de las matrices");
+
+    }
+
+    if(renglonesB == columnasA){
+
+      print("El resultado de la multiplicacion de las matrices es:");
+      print(arrayB * arrayA);
+
+    }else{
+
+      print("El orden de la matriz no puede ser multiplicado");
+
+    }
+
+}
+main(){
+
+    capturarMatrices();
+
+}
+end

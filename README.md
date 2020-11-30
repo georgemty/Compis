@@ -158,7 +158,7 @@ Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementac
 
 ###### Ejecución de Aplicación particular y Documentación parcial
 
-El septimo avance consistio en implementar la memoria una vez terminados los cuadruplos. La creacion de la memoria fue relativamente rapida ya que los cuadruplos de nuestro codigo se estaban comportando de manera correcta. La memoria se encuentra en su propia clase y se llama al main donde se incorpora a los cuadruplos ya implementados. Una vez terminada la memoria e implementada con los cuadruplos de manera correcta se prosiguio a dejar en desarrollo la maquina virtual dado que tenemos previsto terminar la maquina virtual para antes de la entrega final. Asimismo, realizamos documentacion parcial del proyecto la cual se encuentra en esta entrega. 
+El septimo avance consistio en implementar la memoria una vez terminados los cuadruplos. La creacion de la memoria fue relativamente rapida ya que los cuadruplos de nuestro codigo se estaban comportando de manera correcta. La memoria se encuentra en su propia clase y se llama al main donde se incorpora a los cuadruplos ya implementados. Una vez terminada la memoria e implementada con los cuadruplos de manera correcta se prosiguio a dejar en desarrollo la maquina virtual dado que tenemos previsto terminar la maquina virtual para antes de la entrega final. Asimismo, realizamos documentacion parcial del proyecto la cual se encuentra en esta entrega.
 
 Este septimo avance consistio en desarrollar los siguientes bloques:
 - Relizar la implementacion de la memoria
@@ -171,3 +171,17 @@ Una vez terminadas las tareas, proseguimos a corroborar que tanto la implementac
 - [x] Incorporamos en los cuadruplos el manejo de memoria
 - [x] Documentados parcialmente el avance del proyecto
 - [x] El main corre de manera exitosa
+
+## Avance final
+
+El ultimo avance consistio en realizar la implementacion de arreglos, corregir funciones y matrices. Para este avance se cambiaron como se comportaban
+las expresiones ya que se estaban ciclando o se prestaban para ambiguedad. De esta manera, mejor pasamos a la implementacion de arreglos donde fue
+mas sencillo realizarla ya que estabamos implementando algo desde cero y eventualmente implementando matrices ya que solo es un arreglo pero con una
+casilla extra que evaluar. Para el manejo de los datos se utilizo numpy para realizar las operaciones dada las circunstancias de tiempo. Asimismo,
+intentamos tambien implementar recursion pero nos estancamos al no perder una direccion en la cual tratamos de buscar por que al momento de asignar
+una funcion a una variable, esta se perdia.
+
+A pesar de las limitantes del tiempo lo que pudimos arreglar de nuestro codigo con gramatica ambigua fue las funciones void que al momento
+de tener un return dentro de la misma este truena (lo que si deberia de pasar porque es void) y estuvimos cerca de poder implementar recursividad
+pero sin exito ya que no sabiamos que pasaba con la funcion asignada a la variable. Los programas que son completamente eficientes son el programa
+de factorial y el de fibonacci iterativos. 

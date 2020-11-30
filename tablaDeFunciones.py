@@ -1,12 +1,24 @@
 from tablaDeVariables import tablaVar
 from memoria import Memory
 import sys
+import numpy as np
+from numpy.linalg import inv
 
 class tablaFunc():
 
     def __init__(self):
         self.funciones = {}
         self.m = Memory()
+        self.contexto = "global"
+        self.tablaDeVariablesGlobal = tablaVar()
+        self.tablaDeVariablesLocal = tablaVar()
+        self.tipoActual = ""
+        self.arreglosMatrices = {
+            'valorArreglo': None,
+            'pilaDeDimensiones':    []
+        }
+        self.memoriaGlobal = 1000
+        self.memoriaLocal = 8000
 
     def agregarFuncion(self, type, id, numberParams, paramType, paramsID, numberVars):
         if self.funciones.get(id) == None:
@@ -27,6 +39,7 @@ class tablaFunc():
 
 
     def buscarVariableEnTablaFunciones(self, fid, id):
+        print(id + " buscar")
         if self.funciones[fid]['variables'].buscarVar(id) or self.funciones['programa']['variables'].buscarVar(id):
             return True
         else:
@@ -39,8 +52,7 @@ class tablaFunc():
         else:
             print('La variable', id, 'no existe...')
 
-
-
+    #Arreglos y matrices
 
     def agregarVariable(self, fid, type, id):
         #si ya existe en local no lo agrega
@@ -74,6 +86,11 @@ class tablaFunc():
     def get_var_mem(self, var):
         return self.m.get_var_address(var)
 
+    def get_arr_size(self, fid, varTipo):
+        return self.m.get_var_address(var)
+
+    def get_mat_size(self, var):
+        return self.m.get_var_address(var)
 
     def getNumeroParametros(self, fid):
         return self.funciones[fid]['numberParams']
@@ -109,3 +126,81 @@ class tablaFunc():
     def print_fun_vars(self, fid):
         if fid in self.funciones:
             self.funciones[fid]['variables'].printVar()
+
+    def registraArreglo(self, value):
+        self.arreglosMatrices['valorArreglo'] = value
+
+    def registraDimension(self, value):
+        self.arreglosMatrices['pilaDeDimensiones'].append(value)
+
+    def generaArregloMatriz(self):
+        e = None
+        memoriaArreglosMatrices = self.getMemoriaArreglosMatrices()
+        if self.contexto == "global":
+            if((self.memoriaGlobal + memoriaArreglosMatrices) <= 7999):
+                e = self.tablaDeVariablesGlobal.newVariable(self.arreglosMatrices['valorArreglo'], self.tipoActual + '_arr', self.memoriaGlobal, self.arreglosMatrices['pilaDeDimensiones'])
+                self.memoriaGlobal += memoriaArreglosMatrices
+            else:
+                e = "Memory Error"
+        elif self.contexto == "local":
+            if((self.memoriaLocal + memoriaArreglosMatrices) <= 14999):
+                e = self.tablaDeVariablesLocal.newVariable(self.arreglosMatrices['valorArreglo'], self.tipoActual + '_arr', self.memoriaLocal, self.arreglosMatrices['pilaDeDimensiones'])
+                self.memoriaLocal += memoriaArreglosMatrices
+            else:
+                e = "Memory Error"
+        return e
+
+    def getMemoriaArreglosMatrices(self):
+        if(len(self.arreglosMatrices['pilaDeDimensiones']) == 1):
+            return self.arreglosMatrices['pilaDeDimensiones'][0]['u_limit']
+        else:
+            offsetDeDimensiones = self.arreglosMatrices['pilaDeDimensiones'][0]['limiteSuperior'] * self.arreglosMatrices['pilaDeDimensiones'][1]['limiteSuperior']
+            return offsetDeDimensiones
+
+    def transpose():
+        result = [[X[j][i] for j in range(len(X))] for i in range(len(X[0]))]
+        for r in result.getMemoriaArreglosMatrices():
+            return result
+
+    def sum():
+        rows, cols = (len(X),len(Y[0]))
+        result = [[0 for i in range(cols)] for j in range(rows)]
+
+        for q in range(len(X)):
+            for m in range(len(X[0])):
+                result.getMemoriaArreglosMatrices()[q][m] = X[q][m] + Y[q][m]
+
+                return result
+
+    def subtraction():
+        rows, cols = (len(X),len(Y[0]))
+        result = [[0 for i in range(cols)] for j in range(rows)]
+
+        for q in range(len(X)):
+            for m in range(len(X[0])):
+                result.getMemoriaArreglosMatrices()[q][m] = X[q][m] - Y[q][m]
+
+                return result
+
+    def multiplication(X,Y):
+        rows, cols = (len(X),len(Y[0]))
+        result = [[0 for i in range(cols)] for j in range(rows)]
+
+        for i in range(len(X)):
+            for j in range(len(Y[0])):
+                for k in range(len(Y)):
+                    result.getMemoriaArreglosMatrices()[i][j] += X[i][k] * Y[k][j]
+
+                    return result
+
+    def borrarArregloMatriz(self):
+        self.arreglosMatrices['valorArreglo'] = ''
+        self.arreglosMatrices['pilaDeDimensiones'] = []
+
+    def obtenerDimensiones(self, name):
+        if(self.contexto == "local"):
+            variableDimensiones, e = self.tablaDeVariablesLocal.obtenerDimensiones(name)
+            if variableDimensiones == None:
+                return self.tablaDeVariablesGlobal.obtenerDimensiones(name)
+            return variableDimensiones, e
+        return self.tablaDeVariablesGlobal.obtenerDimensiones(name)

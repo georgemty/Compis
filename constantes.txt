@@ -1,0 +1,4 @@
+(0, 45000)
+(1, 45001)
+('"teclea un valor para realizar los n numeros de la secuencia fibonacci"', 48000)
+(2, 45002)
